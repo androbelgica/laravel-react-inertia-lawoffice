@@ -3,34 +3,37 @@ import Pagination from '@/Components/Pagination';
 import TextInput from '@/Components/TextInput';
 import TableHeading from '@/Components/TableHeading';
 import { Head, Link, router} from '@inertiajs/react';
+import { LAWSUIT_STATUS_CLASS_MAP, LAWSUIT_STATUS_TEXT_MAP } from '@/constants.jsx';
+import { LAWSUIT_TYPE_CLASS_MAP, LAWSUIT_TYPE_TEXT_MAP } from '@/constants.jsx';
+import SelectInput from '@/Components/SelectInput';
 
 export default function Index({auth, lawsuits, queryParams = null}) {
 
         queryParams = queryParams || {};
-        const searchFieldChanged = (title, value) => {
+        const searchFieldChanged = (name, value) => {
           if (value) {
-              queryParams[title] = value;
+              queryParams[name] = value;
           } else {
-              delete queryParams[title];
+              delete queryParams[name];
           }
             router.get(route('lawsuits.index'), queryParams);   
              };
 
-        const onKeyPress = (title, e) => {
+        const onKeyPress = (name, e) => {
             if (e.key !== 'Enter') return;
          
-                searchFieldChanged(title, e.target.value);
+                searchFieldChanged(name, e.target.value);
             };
 
-            const sortChanged = (title) => {
-                if (title === queryParams.sort_field) {
+            const sortChanged = (name) => {
+                if (name === queryParams.sort_field) {
                   if (queryParams.sort_direction === "asc") {
                     queryParams.sort_direction = "desc";
                   } else {
                     queryParams.sort_direction = "asc";
                   }
                 } else {
-                  queryParams.sort_field = title;
+                  queryParams.sort_field = name;
                   queryParams.sort_direction = "asc";
                 }
                 router.get(route("lawsuits.index"), queryParams);
@@ -46,7 +49,7 @@ export default function Index({auth, lawsuits, queryParams = null}) {
         user={auth.user}
         header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Lawsuits
+                    Cases
                 </h2>
             }
         >
@@ -187,14 +190,56 @@ export default function Index({auth, lawsuits, queryParams = null}) {
                                             <TextInput
                                                 className="w-full"
                                                 defaultValue={queryParams.title}
-                                                placeholder="Lawsuit Title"
+                                                placeholder="Case Title"
                                                 onBlur={e => searchFieldChanged('title', e.target.value)}
                                                 onKeyPress={e => onKeyPress('title', e)}
                                             />
                                         </th>
-                                        <th className="px-3 py-3"></th>
-                                        <th className="px-3 py-3"></th>
-                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3">
+                                        <TextInput
+                                                className="w-full"
+                                                defaultValue={queryParams.case_number}
+                                                placeholder="Case Number"
+                                                onBlur={e => searchFieldChanged('case_number', e.target.value)}
+                                                onKeyPress={e => onKeyPress('case_number', e)}
+                                            />
+                                        </th>
+                                        <th className="px-3 py-3">
+                                        <SelectInput
+                                                className="w-full"
+                                                defaultValue={queryParams.case_type}
+                                                onChange={(e) =>
+                                                    searchFieldChanged("case_type", e.target.value)
+                                                }
+                                                >
+                                                <option value="">Select Type</option>
+                                                <option value="criminal">Criminal</option>
+                                                <option value="civil">Civil</option>
+                                                <option value="administrative">Administrative</option>
+                                                <option value="election">Election</option>
+                                                <option value="labor">Labor</option>
+                                                <option value="tax">Tax</option>
+                                                <option value="environmental">Environmental</option>
+                                                <option value="intellectual property cases">Intellectual Property</option>
+                                                </SelectInput>
+                                        </th>
+                                        <th className="px-3 py-3">
+                                            <SelectInput
+                                                className="w-full"
+                                                defaultValue={queryParams.case_status}
+                                                onChange={(e) =>
+                                                    searchFieldChanged("case_status", e.target.value)
+                                                }
+                                                >
+                                                <option value="">Select Status</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="decided">Decided</option>
+                                                <option value="dismissed">Dismissed</option>
+                                                <option value="appealed">Appealed</option>
+                                                <option value="remanded">Remanded</option>
+                                                <option value="settled">Settled</option>
+                                                </SelectInput>
+                                        </th>
                                         <th className="px-3 py-3"></th>
                                         <th className="px-3 py-3"></th>
                                         <th className="px-3 py-3"></th>
@@ -206,31 +251,47 @@ export default function Index({auth, lawsuits, queryParams = null}) {
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {/* <pre>{JSON.stringify(lawsuits,undefined, 2)}</pre> */}
                                     {lawsuits.data.map((lawsuit) => (
                                         <tr   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                                             key={lawsuit.id}>
                                             <td className="px-3 py-2">{lawsuit.id}</td>
                                             <td className="px-3 py-2">{lawsuit.title}</td>
                                             <td className="px-3 py-2">{lawsuit.case_number}</td>
-                                            <td className="px-3 py-2">{lawsuit.case_type}</td>
-                                            <td className="px-3 py-2">{lawsuit.case_status}</td>
+                                            <td className="px-3 py-2">
+                                                <span                                                    
+                                                        >
+                                                    {LAWSUIT_TYPE_TEXT_MAP[lawsuit.case_type]}
+                                                    </span>   
+                                            </td>
+                                            <td className="px-3 py-2">
+                                                 <span
+                                                    className={
+                                                    "px-2 py-1 rounded text-white " +
+                                                    LAWSUIT_STATUS_CLASS_MAP[lawsuit.case_status]
+                                                    }
+                                                    >
+                                                {LAWSUIT_STATUS_TEXT_MAP[lawsuit.case_status]}
+                                                </span>
+                                              
+                                            </td>
                                             <td className="px-3 py-2">{lawsuit.court_name}</td>
                                             <td className="px-3 py-2">{lawsuit.open_date}</td>
                                             <td className="px-3 py-2">{lawsuit.close_date}</td>
-                                            <td className="px-3 py-2">{lawsuit.lawyer.name}</td>
-                                            <td className="px-3 py-2">{lawsuit.client.name}</td>
-                                            <td className="px-3 py-2">{lawsuit.created_by.name}</td>
-                                            <td className="px-3 py-2">{lawsuit.updated_by.name}</td>
+                                            <td className="px-3 py-2">{lawsuit.lawyer ? lawsuit.lawyer.name : 'N/A'}</td>
+                                            <td className="px-3 py-2">{lawsuit.client ? lawsuit.client.name : 'N/A'}</td>
+                                            <td className="px-3 py-2">{lawsuit.created_by ? lawsuit.created_by.name : 'N/A'}</td>
+                                            <td className="px-3 py-2">{lawsuit.updated_by ? lawsuit.updated_by.name : 'N/A'}</td>
                                             <td className="px-3 py-2 text-nowrap">{lawsuit.created_at}</td>
                                             <td className="px-3 py-2">
-                                                {/* <Link href={route("lawsuits.edit", lawsuit.id)} 
+                                            <Link href={route("lawsuits.edit", lawsuit.id)} 
                                                     className="font-medium text-blue-600 dark:text-white hover:underline mx-1">
                                                     Edit
                                                 </Link>
                                                 <Link href={route("lawsuits.destroy", lawsuit.id)} 
                                                     className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1">
                                                     Delete
-                                                </Link> */}
+                                                </Link>
                                               
                                             </td>
                                         </tr>

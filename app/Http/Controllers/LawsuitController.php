@@ -23,6 +23,18 @@ class LawsuitController extends Controller
             $query->where('title', 'like', '%' . request('title') . '%');
         }
 
+        if (request('case_number')) {
+            $query->where('case_number', 'like', '%' . request('case_number') . '%');
+        }
+
+        if (request('case_type')) {
+            $query->where('case_type', 'like', '%' . request('case_type') . '%');
+        }
+
+        if (request('case_status')) {
+            $query->where('case_status', 'like', '%' . request('case_status') . '%');
+        }
+
         $lawsuits = $query->orderBy($sortFields, $sortDirections)
             ->paginate(10)
             ->onEachSide(1);

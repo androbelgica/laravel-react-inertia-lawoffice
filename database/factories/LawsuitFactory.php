@@ -19,8 +19,17 @@ class LawsuitFactory extends Factory
         return [
             'title' => $this->faker->word,
             'case_number' => $this->faker->unique()->numerify('CASE-#####'),
-            'case_type' => $this->faker->word,
-            'case_status' => $this->faker->word,
+            'case_type' => $this->faker->randomElement([
+                'criminal',
+                'civil',
+                'administrative',
+                'election',
+                'labor',
+                'tax',
+                'environmental',
+                'intellectual property'
+            ]),
+            'case_status' => $this->faker->randomElement(['pending', 'decided', 'dismissed', 'appealed', 'remanded', 'settled']),
             'court_name' => $this->faker->word,
             'open_date' => $this->faker->dateTime,
             'close_date' => $this->faker->dateTime,
