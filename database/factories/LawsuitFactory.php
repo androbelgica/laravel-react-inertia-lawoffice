@@ -1,0 +1,32 @@
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Lawsuit>
+ */
+class LawsuitFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'case_number' => $this->faker->unique()->numerify('CASE-#####'),
+            'case_type' => $this->faker->word,
+            'case_status' => $this->faker->word,
+            'court_name' => $this->faker->word,
+            'open_date' => $this->faker->dateTime,
+            'close_date' => $this->faker->dateTime,
+            'lawyer_id' => \App\Models\Lawyer::factory(),
+            'client_id' => \App\Models\Client::factory(),
+            'created_by' => \App\Models\User::factory(),
+            'updated_by' => \App\Models\User::factory(),
+        ];
+    }
+}
