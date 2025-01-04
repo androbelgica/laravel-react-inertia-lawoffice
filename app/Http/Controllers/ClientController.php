@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Http\Resources\ClientResource;
 
 class ClientController extends Controller
 {
@@ -13,7 +14,24 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        $query = Client::query();
+
+        $sortFields = request("sort_field", "created_at");
+        $sortDirections = request("sort_direction", "desc");
+
+        if (request('name')) {
+            $query->where('name', 'like', '%' . request('name') . '%');
+        }
+
+        $clients = $query->orderBy($sortFields, $sortDirections)
+            ->paginate(10)
+            ->onEachSide(1);
+
+
+        return inertia('Client/Index', [
+            "clients" => ClientResource::collection($clients),
+            'queryParams' => request()->query() ?: null,
+        ]);
     }
 
     /**
