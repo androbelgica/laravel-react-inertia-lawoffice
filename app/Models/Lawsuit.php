@@ -13,4 +13,24 @@ class Lawsuit extends Model
     {
         return $this->hasMany(LawsuitTask::class);
     }
+
+    public function lawyer()
+    {
+        return $this->belongsTo(Lawyer::class, 'lawyer_id');
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

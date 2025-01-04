@@ -5,7 +5,7 @@ import TableHeading from '@/Components/TableHeading';
 import { Head, Link, router} from '@inertiajs/react';
 
 
-export default function Index({auth, clients, queryParams = null}) {
+export default function Index({auth, lawyers, queryParams = null}) {
 
         queryParams = queryParams || {};
         const searchFieldChanged = (name, value) => {
@@ -14,7 +14,7 @@ export default function Index({auth, clients, queryParams = null}) {
           } else {
               delete queryParams[name];
           }
-            router.get(route('clients.index'), queryParams);   
+            router.get(route('lawyers.index'), queryParams);   
              };
 
         const onKeyPress = (name, e) => {
@@ -34,7 +34,7 @@ export default function Index({auth, clients, queryParams = null}) {
                   queryParams.sort_field = name;
                   queryParams.sort_direction = "asc";
                 }
-                router.get(route("clients.index"), queryParams);
+                router.get(route("lawyers.index"), queryParams);
               };
             
             
@@ -48,11 +48,11 @@ export default function Index({auth, clients, queryParams = null}) {
         user={auth.user}
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Clients
+                    Lawyers
                 </h2>
             }
         >
-            <Head title="Clients" />
+            <Head title="Lawyers" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -81,15 +81,7 @@ export default function Index({auth, clients, queryParams = null}) {
                                         >
                                             Name
                                        </TableHeading>
-                                       <TableHeading
-                                            name = "address"
-                                            sortable = {true}
-                                            sort_field = {queryParams.sort_field}
-                                            sort_direction = {queryParams.sort_direction}
-                                            sortChanged = {sortChanged}
-                                        >
-                                            Address
-                                       </TableHeading>
+                                     
                                        <TableHeading
                                             name = "phone_number"
                                             sortable = {true}
@@ -117,15 +109,7 @@ export default function Index({auth, clients, queryParams = null}) {
                                         >
                                             Created By
                                        </TableHeading>
-                                       <TableHeading
-                                            name = "created_at"
-                                            sortable = {true}
-                                            sort_field = {queryParams.sort_field}
-                                            sort_direction = {queryParams.sort_direction}
-                                            sortChanged = {sortChanged}
-                                        >
-                                            Created At
-                                       </TableHeading>
+                                       
                                         <th className="px-3 py-3 text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -136,7 +120,7 @@ export default function Index({auth, clients, queryParams = null}) {
                                             <TextInput
                                                 className="w-full"
                                                 defaultValue={queryParams.name}
-                                                placeholder="Client Name"
+                                                placeholder="Lawyer Name"
                                                 onBlur={e => searchFieldChanged('name', e.target.value)}
                                                 onKeyPress={e => onKeyPress('name', e)}
                                             />
@@ -145,27 +129,24 @@ export default function Index({auth, clients, queryParams = null}) {
                                         <th className="px-3 py-3"></th>
                                         <th className="px-3 py-3"></th>
                                         <th className="px-3 py-3"></th>
-                                        <th className="px-3 py-3"></th>
-                                        <th className="px-3 py-3"></th>
+                                     
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {clients.data.map((client) => (
+                                    {lawyers.data.map((lawyer) => (
                                         <tr   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                                            key={client.id}>
-                                            <td className="px-3 py-2">{client.id}</td>
-                                            <td className="px-3 py-2">{client.name}</td>
-                                            <td className="px-3 py-2">{client.address}</td>
-                                            <td className="px-3 py-2">{client.phone_number}</td>
-                                            <td className="px-3 py-2">{client.email}</td>
-                                            <td className="px-3 py-2">{client.created_by.name}</td>
-                                            <td className="px-3 py-2 text-nowrap">{client.created_at}</td>
+                                            key={lawyer.id}>
+                                            <td className="px-3 py-2">{lawyer.id}</td>
+                                            <td className="px-3 py-2">{lawyer.name}</td>
+                                            <td className="px-3 py-2">{lawyer.phone_number}</td>
+                                            <td className="px-3 py-2">{lawyer.email}</td>
+                                            <td className="px-3 py-2">{lawyer.created_by.name}</td>
                                             <td className="px-3 py-2">
-                                                <Link href={route("clients.edit", client.id)} 
+                                                <Link href={route("lawyers.edit", lawyer.id)} 
                                                     className="font-medium text-blue-600 dark:text-white hover:underline mx-1">
                                                     Edit
                                                 </Link>
-                                                <Link href={route("clients.destroy", client.id)} 
+                                                <Link href={route("lawyers.destroy", lawyer.id)} 
                                                     className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1">
                                                     Delete
                                                 </Link>
@@ -176,7 +157,7 @@ export default function Index({auth, clients, queryParams = null}) {
                                 </tbody>
                             </table>
                            </div>
-                            <Pagination links={clients.meta.links} />
+                            <Pagination links={lawyers.meta.links} />
                         </div>
                     </div>
                 </div>

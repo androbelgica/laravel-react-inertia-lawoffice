@@ -4,39 +4,37 @@ import TextInput from '@/Components/TextInput';
 import TableHeading from '@/Components/TableHeading';
 import { Head, Link, router} from '@inertiajs/react';
 
-
-export default function Index({auth, clients, queryParams = null}) {
+export default function Index({auth, lawsuits, queryParams = null}) {
 
         queryParams = queryParams || {};
-        const searchFieldChanged = (name, value) => {
+        const searchFieldChanged = (title, value) => {
           if (value) {
-              queryParams[name] = value;
+              queryParams[title] = value;
           } else {
-              delete queryParams[name];
+              delete queryParams[title];
           }
-            router.get(route('clients.index'), queryParams);   
+            router.get(route('lawsuits.index'), queryParams);   
              };
 
-        const onKeyPress = (name, e) => {
+        const onKeyPress = (title, e) => {
             if (e.key !== 'Enter') return;
          
-                searchFieldChanged(name, e.target.value);
+                searchFieldChanged(title, e.target.value);
             };
 
-            const sortChanged = (name) => {
-                if (name === queryParams.sort_field) {
+            const sortChanged = (title) => {
+                if (title === queryParams.sort_field) {
                   if (queryParams.sort_direction === "asc") {
                     queryParams.sort_direction = "desc";
                   } else {
                     queryParams.sort_direction = "asc";
                   }
                 } else {
-                  queryParams.sort_field = name;
+                  queryParams.sort_field = title;
                   queryParams.sort_direction = "asc";
                 }
-                router.get(route("clients.index"), queryParams);
+                router.get(route("lawsuits.index"), queryParams);
               };
-            
             
         
     const isSorted = (name, direction) => {
@@ -46,15 +44,15 @@ export default function Index({auth, clients, queryParams = null}) {
     return (
         <AuthenticatedLayout
         user={auth.user}
-            header={
+        header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Clients
+                    Lawsuits
                 </h2>
             }
         >
-            <Head title="Clients" />
+            <Head title="Lawsuits" />
 
-            <div className="py-12">
+            <div className="py-12"></div>
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                   <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
@@ -71,42 +69,86 @@ export default function Index({auth, clients, queryParams = null}) {
                                         >
                                             ID
                                        </TableHeading>
-                                       
                                        <TableHeading
-                                            name = "name"
+                                            name = "title"
                                             sortable = {true}
                                             sort_field = {queryParams.sort_field}
                                             sort_direction = {queryParams.sort_direction}
                                             sortChanged = {sortChanged}
                                         >
-                                            Name
+                                            Title
                                        </TableHeading>
                                        <TableHeading
-                                            name = "address"
+                                            name = "case_number"
                                             sortable = {true}
                                             sort_field = {queryParams.sort_field}
                                             sort_direction = {queryParams.sort_direction}
                                             sortChanged = {sortChanged}
                                         >
-                                            Address
+                                            Case Number
                                        </TableHeading>
                                        <TableHeading
-                                            name = "phone_number"
+                                            name = "case_type"
                                             sortable = {true}
                                             sort_field = {queryParams.sort_field}
                                             sort_direction = {queryParams.sort_direction}
                                             sortChanged = {sortChanged}
                                         >
-                                            Phone Number
+                                            Case Type
                                        </TableHeading>
                                        <TableHeading
-                                            name = "email"
+                                            name = "case_status"
                                             sortable = {true}
                                             sort_field = {queryParams.sort_field}
                                             sort_direction = {queryParams.sort_direction}
                                             sortChanged = {sortChanged}
                                         >
-                                            Email
+                                            Case Status
+                                       </TableHeading>
+                                       <TableHeading
+                                            name = "court_name"
+                                            sortable = {true}
+                                            sort_field = {queryParams.sort_field}
+                                            sort_direction = {queryParams.sort_direction}
+                                            sortChanged = {sortChanged}
+                                        >
+                                            Court Name
+                                       </TableHeading>
+                                       <TableHeading
+                                            name = "open_date"
+                                            sortable = {true}
+                                            sort_field = {queryParams.sort_field}
+                                            sort_direction = {queryParams.sort_direction}
+                                            sortChanged = {sortChanged}
+                                        >
+                                            Open Date
+                                       </TableHeading>
+                                       <TableHeading
+                                            name = "close_date"
+                                            sortable = {true}
+                                            sort_field = {queryParams.sort_field}
+                                            sort_direction = {queryParams.sort_direction}
+                                            sortChanged = {sortChanged}
+                                        >
+                                            Close Date
+                                       </TableHeading>
+                                       <TableHeading
+                                            name = "lawyer_id"
+                                            sortable = {true}
+                                            sort_field = {queryParams.sort_field}
+                                            sort_direction = {queryParams.sort_direction}
+                                            sortChanged = {sortChanged}
+                                        >
+                                            Lawyer
+                                       </TableHeading>
+                                       <TableHeading
+                                            name = "client_id"
+                                            sortable = {true}
+                                            sort_field = {queryParams.sort_field}
+                                            sort_direction = {queryParams.sort_direction}
+                                            sortChanged = {sortChanged}
+                                        >
+                                            Client
                                        </TableHeading>
                                        <TableHeading
                                             name = "created_by"
@@ -116,6 +158,15 @@ export default function Index({auth, clients, queryParams = null}) {
                                             sortChanged = {sortChanged}
                                         >
                                             Created By
+                                       </TableHeading>
+                                       <TableHeading
+                                            name = "updated_by"
+                                            sortable = {true}
+                                            sort_field = {queryParams.sort_field}
+                                            sort_direction = {queryParams.sort_direction}
+                                            sortChanged = {sortChanged}
+                                        >
+                                            Updated By
                                        </TableHeading>
                                        <TableHeading
                                             name = "created_at"
@@ -135,12 +186,17 @@ export default function Index({auth, clients, queryParams = null}) {
                                         <th className="px-3 py-3">
                                             <TextInput
                                                 className="w-full"
-                                                defaultValue={queryParams.name}
-                                                placeholder="Client Name"
-                                                onBlur={e => searchFieldChanged('name', e.target.value)}
-                                                onKeyPress={e => onKeyPress('name', e)}
+                                                defaultValue={queryParams.title}
+                                                placeholder="Lawsuit Title"
+                                                onBlur={e => searchFieldChanged('title', e.target.value)}
+                                                onKeyPress={e => onKeyPress('title', e)}
                                             />
                                         </th>
+                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3"></th>
+                                        <th className="px-3 py-3"></th>
                                         <th className="px-3 py-3"></th>
                                         <th className="px-3 py-3"></th>
                                         <th className="px-3 py-3"></th>
@@ -150,25 +206,31 @@ export default function Index({auth, clients, queryParams = null}) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {clients.data.map((client) => (
+                                    {lawsuits.data.map((lawsuit) => (
                                         <tr   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                                            key={client.id}>
-                                            <td className="px-3 py-2">{client.id}</td>
-                                            <td className="px-3 py-2">{client.name}</td>
-                                            <td className="px-3 py-2">{client.address}</td>
-                                            <td className="px-3 py-2">{client.phone_number}</td>
-                                            <td className="px-3 py-2">{client.email}</td>
-                                            <td className="px-3 py-2">{client.created_by.name}</td>
-                                            <td className="px-3 py-2 text-nowrap">{client.created_at}</td>
+                                            key={lawsuit.id}>
+                                            <td className="px-3 py-2">{lawsuit.id}</td>
+                                            <td className="px-3 py-2">{lawsuit.title}</td>
+                                            <td className="px-3 py-2">{lawsuit.case_number}</td>
+                                            <td className="px-3 py-2">{lawsuit.case_type}</td>
+                                            <td className="px-3 py-2">{lawsuit.case_status}</td>
+                                            <td className="px-3 py-2">{lawsuit.court_name}</td>
+                                            <td className="px-3 py-2">{lawsuit.open_date}</td>
+                                            <td className="px-3 py-2">{lawsuit.close_date}</td>
+                                            <td className="px-3 py-2">{lawsuit.lawyer.name}</td>
+                                            <td className="px-3 py-2">{lawsuit.client.name}</td>
+                                            <td className="px-3 py-2">{lawsuit.created_by.name}</td>
+                                            <td className="px-3 py-2">{lawsuit.updated_by.name}</td>
+                                            <td className="px-3 py-2 text-nowrap">{lawsuit.created_at}</td>
                                             <td className="px-3 py-2">
-                                                <Link href={route("clients.edit", client.id)} 
+                                                {/* <Link href={route("lawsuits.edit", lawsuit.id)} 
                                                     className="font-medium text-blue-600 dark:text-white hover:underline mx-1">
                                                     Edit
                                                 </Link>
-                                                <Link href={route("clients.destroy", client.id)} 
+                                                <Link href={route("lawsuits.destroy", lawsuit.id)} 
                                                     className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1">
                                                     Delete
-                                                </Link>
+                                                </Link> */}
                                               
                                             </td>
                                         </tr>
@@ -176,11 +238,11 @@ export default function Index({auth, clients, queryParams = null}) {
                                 </tbody>
                             </table>
                            </div>
-                            <Pagination links={clients.meta.links} />
+                            <Pagination links={lawsuits.meta.links} />
                         </div>
                     </div>
                 </div>
-            </div>
+            
         </AuthenticatedLayout>
     );
 }

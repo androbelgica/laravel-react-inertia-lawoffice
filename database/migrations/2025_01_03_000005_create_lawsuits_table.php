@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('lawsuits', function (Blueprint $table) {
             $table->id('id');
+            $table->string('title');
             $table->string('case_number');
             $table->string('case_type');
             $table->string('case_status');

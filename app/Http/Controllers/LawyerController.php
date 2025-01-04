@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lawyer;
+use App\Http\Resources\LawyerResource;
 use App\Http\Requests\StoreLawyerRequest;
 use App\Http\Requests\UpdateLawyerRequest;
 
@@ -13,7 +14,24 @@ class LawyerController extends Controller
      */
     public function index()
     {
-        //
+        $query = Lawyer::query();
+
+        $sortFields = request("sort_field", "created_at");
+        $sortDirections = request("sort_direction", "desc");
+
+        if (request('name')) {
+            $query->where('name', 'like', '%' . request('name') . '%');
+        }
+
+        $lawyers = $query->orderBy($sortFields, $sortDirections)
+            ->paginate(10)
+            ->onEachSide(1);
+
+
+        return inertia('Lawyer/Index', [
+            "lawyers" => LawyerResource::collection($lawyers),
+            'queryParams' => request()->query() ?: null,
+        ]);
     }
 
     /**

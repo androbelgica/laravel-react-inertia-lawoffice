@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lawsuit;
+use App\Http\Resources\LawsuitResource;
 use App\Http\Requests\StoreLawsuitRequest;
 use App\Http\Requests\UpdateLawsuitRequest;
 
@@ -13,9 +14,25 @@ class LawsuitController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $query = Lawsuit::query();
 
+        $sortFields = request("sort_field", "created_at");
+        $sortDirections = request("sort_direction", "desc");
+
+        if (request('title')) {
+            $query->where('title', 'like', '%' . request('title') . '%');
+        }
+
+        $lawsuits = $query->orderBy($sortFields, $sortDirections)
+            ->paginate(10)
+            ->onEachSide(1);
+
+
+        return inertia('Lawsuit/Index', [
+            "lawsuits" => LawsuitResource::collection($lawsuits),
+            'queryParams' => request()->query() ?: null,
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      */

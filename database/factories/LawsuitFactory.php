@@ -17,6 +17,7 @@ class LawsuitFactory extends Factory
     public function definition(): array
     {
         return [
+            'title' => $this->faker->word,
             'case_number' => $this->faker->unique()->numerify('CASE-#####'),
             'case_type' => $this->faker->word,
             'case_status' => $this->faker->word,
