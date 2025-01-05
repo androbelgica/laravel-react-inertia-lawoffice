@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LawsuitTask;
+use App\Http\Resources\LawsuitTaskResource;
 use App\Http\Requests\StoreLawsuitTaskRequest;
 use App\Http\Requests\UpdateLawsuitTaskRequest;
 
@@ -13,7 +14,33 @@ class LawsuitTaskController extends Controller
      */
     public function index()
     {
-        //
+        $query = LawsuitTask::query();
+
+        $sortFields = request("sort_field", "created_at");
+        $sortDirections = request("sort_direction", "desc");
+
+        if (request('task_name')) {
+            $query->where('task_name', 'like', '%' . request('task_name') . '%');
+        }
+
+        if (request('priority')) {
+            $query->where('priority', 'like', '%' . request('priority') . '%');
+        }
+
+        if (request('status')) {
+            $query->where('status', 'like', '%' . request('status') . '%');
+        }
+
+
+        $lawsuit_tasks = $query->orderBy($sortFields, $sortDirections)
+            ->paginate(10)
+            ->onEachSide(1);
+
+
+        return inertia('LawsuitTask/Index', [
+            "lawsuit_tasks" => LawsuitTaskResource::collection($lawsuit_tasks),
+            'queryParams' => request()->query() ?: null,
+        ]);
     }
 
     /**

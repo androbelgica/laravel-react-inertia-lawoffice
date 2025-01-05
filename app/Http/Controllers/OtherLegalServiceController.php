@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OtherLegalService;
 use App\Http\Requests\StoreOtherLegalServiceRequest;
 use App\Http\Requests\UpdateOtherLegalServiceRequest;
+use App\Http\Resources\OtherLegalServiceResource;
 
 class OtherLegalServiceController extends Controller
 {
@@ -13,7 +14,27 @@ class OtherLegalServiceController extends Controller
      */
     public function index()
     {
-        //
+        $query = OtherLegalService::query();
+
+        $sortField = request('sort_field', 'created_at');
+        $sortDirection = request('sort_direction', 'desc');
+
+        if (request('service_name')) {
+            $query->where('service_name', 'like', '%' . request('service_name') . '%');
+        }
+
+        if (request('progress_status')) {
+            $query->where('progress_status', 'like', '%' . request('progress_status') . '%');
+        }
+
+        $other_services = $query->orderBy($sortField, $sortDirection)
+            ->paginate(10)
+            ->onEachSide(1);
+
+        return inertia('OtherLegalServices/Index', [
+            'other_services' => OtherLegalServiceResource::collection($other_services),
+            'queryParams' => request()->query() ?: null,
+        ]);
     }
 
     /**

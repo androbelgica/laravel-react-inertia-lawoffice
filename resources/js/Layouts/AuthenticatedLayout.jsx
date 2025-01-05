@@ -48,6 +48,26 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Cases
                                 </NavLink>
+                                <NavLink
+                                    href={route('other-legal-services.index')}
+                                    active={route().current('other-legal-services.index')}
+                                >
+                                    Other Legal Services
+                                </NavLink>
+                                <NavLink
+                                    href={route('lawsuit-tasks.index')}
+                                    active={route().current('lawsuit-tasks.index')}
+                                >
+                                    Litigation Tasks
+                                </NavLink>
+                                <NavLink
+                                    href={route('other-legal-service-tasks.index')}
+                                    active={route().current('other-legal-service-tasks.index')}
+                                >
+                                    Other Tasks
+                                </NavLink>
+
+                             
                             </div>
                         </div>
 

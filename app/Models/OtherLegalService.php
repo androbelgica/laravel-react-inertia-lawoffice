@@ -14,4 +14,19 @@ class OtherLegalService extends Model
     {
         return $this->hasMany(OtherLegalServiceTask::class);
     }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }
