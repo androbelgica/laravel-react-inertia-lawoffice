@@ -23,10 +23,10 @@ class LawsuitTaskResource extends JsonResource
             'status' => $this->status,
             'due_date' => (new Carbon($this->due_date))->format('Y-m-d'),
             'lawsuit' => new LawsuitResource($this->lawsuit),
-            'assigned_to' => $this->assigned_to ? new UserResource($this->assigned_to) : null,
+            'assigned_to' => $this->assignedTo ? new UserResource($this->assignedTo) : null,
             'created_by' => new UserResource($this->createdBy),
             'updated_by' => new UserResource($this->updatedBy),
-            'created_at' => $this->created_at,
+            'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),
 
         ];
     }

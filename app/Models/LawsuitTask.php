@@ -15,7 +15,7 @@ class LawsuitTask extends Model
         return $this->belongsTo(Lawsuit::class, 'lawsuit_id');
     }
 
-    public function assigned_to()
+    public function assignedTo()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
