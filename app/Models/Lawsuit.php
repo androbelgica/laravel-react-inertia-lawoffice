@@ -9,7 +9,7 @@ class Lawsuit extends Model
 {
     /** @use HasFactory<\Database\Factories\LawsuitFactory> */
     use HasFactory;
-    public function lawsuitTasks()
+    public function lawsuit_tasks()
     {
         return $this->hasMany(LawsuitTask::class);
     }

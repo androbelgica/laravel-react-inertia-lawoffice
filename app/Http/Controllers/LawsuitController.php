@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lawsuit;
 use App\Http\Resources\LawsuitResource;
+use App\Http\Resources\LawsuitTaskResource;
 use App\Http\Requests\StoreLawsuitRequest;
 use App\Http\Requests\UpdateLawsuitRequest;
 
@@ -50,7 +51,7 @@ class LawsuitController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Lawsuit/Create');
     }
 
     /**
@@ -66,7 +67,34 @@ class LawsuitController extends Controller
      */
     public function show(Lawsuit $lawsuit)
     {
-        //
+
+        $query = $lawsuit->lawsuit_tasks();
+
+        $sortFields = request("sort_field", "created_at");
+        $sortDirections = request("sort_direction", "desc");
+
+        if (request('task_name')) {
+            $query->where('task_name', 'like', '%' . request('task_name') . '%');
+        }
+
+        if (request('priority')) {
+            $query->where('priority', 'like', '%' . request('priority') . '%');
+        }
+
+        if (request('status')) {
+            $query->where('status', 'like', '%' . request('status') . '%');
+        }
+
+
+        $lawsuit_tasks = $query->orderBy($sortFields, $sortDirections)
+            ->paginate(10)
+            ->onEachSide(1);
+
+        return inertia('Lawsuit/Show', [
+            'lawsuit' => new LawsuitResource($lawsuit),
+            "lawsuit_tasks" => LawsuitTaskResource::collection($lawsuit_tasks),
+            'queryParams' => request()->query() ?: null,
+        ]);
     }
 
     /**
