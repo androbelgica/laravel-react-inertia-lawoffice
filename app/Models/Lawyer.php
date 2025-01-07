@@ -9,6 +9,13 @@ class Lawyer extends Model
 {
     /** @use HasFactory<\Database\Factories\LawyerFactory> */
     use HasFactory;
+    protected $fillable = [
+        'name',
+        'phone_number',
+        'email',
+        'created_by',
+        'updated_by',
+    ];
 
     public function lawsuits()
     {

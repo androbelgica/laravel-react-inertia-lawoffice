@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 class ClientResource extends JsonResource
 {
+    public static $wrap = false;
     /**
      * Transform the resource into an array.
      *
@@ -24,7 +25,6 @@ class ClientResource extends JsonResource
             'created_by' => new UserResource($this->createdBy),
             'updated_by' =>  new UserResource($this->updatedBy),
             'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),
-
         ];
     }
 }

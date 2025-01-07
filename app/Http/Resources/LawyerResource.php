@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class LawyerResource extends JsonResource
 {
+    public static $wrap = false;
     /**
      * Transform the resource into an array.
      *
@@ -20,9 +21,7 @@ class LawyerResource extends JsonResource
             'phone_number' => $this->phone_number,
             'email' => $this->email,
             'created_by' => new UserResource($this->createdBy),
-            'updated_by' =>  new UserResource($this->updatedBy),
-
-
+            'updated_by' => new UserResource($this->updatedBy),
         ];
     }
 }

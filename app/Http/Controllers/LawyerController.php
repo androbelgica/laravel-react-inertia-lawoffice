@@ -6,6 +6,7 @@ use App\Models\Lawyer;
 use App\Http\Resources\LawyerResource;
 use App\Http\Requests\StoreLawyerRequest;
 use App\Http\Requests\UpdateLawyerRequest;
+use Illuminate\Support\Facades\Auth;
 
 class LawyerController extends Controller
 {
@@ -31,6 +32,7 @@ class LawyerController extends Controller
         return inertia('Lawyer/Index', [
             "lawyers" => LawyerResource::collection($lawyers),
             'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
         ]);
     }
 
@@ -39,7 +41,7 @@ class LawyerController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Lawyer/Create');
     }
 
     /**
@@ -47,7 +49,12 @@ class LawyerController extends Controller
      */
     public function store(StoreLawyerRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['created_by'] = Auth::id();
+        $data['updated_by'] = Auth::id();
+        Lawyer::create($data);
+
+        return to_route('lawyers.index')->with('success', 'Lawyer created successfully.');
     }
 
     /**
@@ -63,15 +70,25 @@ class LawyerController extends Controller
      */
     public function edit(Lawyer $lawyer)
     {
-        //
+        return inertia('Lawyer/Edit', [
+            'lawyer' => new LawyerResource($lawyer),
+        ]);
     }
+
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateLawyerRequest $request, Lawyer $lawyer)
     {
-        //
+        $data = $request->validated();
+        $data['updated_by'] = Auth::id();
+
+        $lawyer->update($data);
+
+        return to_route('lawyers.index')
+            ->with('success', "Lawyer information of \"$lawyer->name\" was updated");
     }
 
     /**
@@ -79,6 +96,11 @@ class LawyerController extends Controller
      */
     public function destroy(Lawyer $lawyer)
     {
-        //
+        $name = $lawyer->name;
+        $lawyer->delete();
+        return to_route('lawyers.index')->with(
+            'success',
+            "Lawyer \"$name\" was deleted successfully"
+        );
     }
 }

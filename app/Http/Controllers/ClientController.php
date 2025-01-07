@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Http\Resources\ClientResource;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
@@ -27,10 +28,10 @@ class ClientController extends Controller
             ->paginate(10)
             ->onEachSide(1);
 
-
         return inertia('Client/Index', [
             "clients" => ClientResource::collection($clients),
             'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
         ]);
     }
 
@@ -39,7 +40,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Client/Create');
     }
 
     /**
@@ -47,7 +48,12 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['created_by'] = Auth::id();
+        $data['updated_by'] = Auth::id();
+        Client::create($data);
+
+        return to_route('clients.index')->with('success', 'Client was added successfully');
     }
 
     /**
@@ -55,7 +61,7 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
-        //c
+        // ...
     }
 
     /**
@@ -63,7 +69,9 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
-        //
+        return inertia('Client/Edit', [
+            'client' => new ClientResource($client),
+        ]);
     }
 
     /**
@@ -71,7 +79,13 @@ class ClientController extends Controller
      */
     public function update(UpdateClientRequest $request, Client $client)
     {
-        //
+        $data = $request->validated();
+        $data['updated_by'] = Auth::id();
+
+        $client->update($data);
+
+        return to_route('clients.index')
+            ->with('success', "Client informations of \"$client->name\" was updated");
     }
 
     /**
@@ -79,6 +93,11 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
-        //
+        $name = $client->name;
+        $client->delete();
+        return to_route('clients.index')->with(
+            'success',
+            "Client \"$name\" was deleted successfully"
+        );
     }
 }
