@@ -1,10 +1,12 @@
+import React, { useState, useEffect } from "react";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import SelectInput from "@/Components/SelectInput";
-import TextAreaInput from "@/Components/TextAreaInput";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
+import { createAvatar } from "@dicebear/core";
+import { avataaars } from "@dicebear/collection";
 
 export default function Create({ auth }) {
   const { data, setData, post, errors, reset } = useForm({
@@ -12,11 +14,52 @@ export default function Create({ auth }) {
     address: "",
     phone_number: "",
     email: "",
+    role: "user",
+    avatar: "",
+    phone: "",
   });
+
+  const [selectedAvatar, setSelectedAvatar] = useState("");
+  const [avatars, setAvatars] = useState([]);
+  const [avatarIndex, setAvatarIndex] = useState(0);
+  const avatarsPerPage = 10;
+
+  useEffect(() => {
+    const generateAvatars = async () => {
+      const generatedAvatars = await Promise.all(
+        Array.from({ length: 30 }, async (_, i) => {
+          const avatar = createAvatar(avataaars, { seed: i.toString() });
+          return await avatar.toDataUri();
+        })
+      );
+      setAvatars(generatedAvatars);
+    };
+
+    generateAvatars();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setData(name, value);
+  };
+
+  const handleAvatarSelect = (avatar) => {
+    setSelectedAvatar(avatar);
+    setData("avatar", avatar);
+  };
+
+  const handleNextAvatars = () => {
+    setAvatarIndex((prevIndex) =>
+      Math.min(prevIndex + avatarsPerPage, avatars.length - avatarsPerPage)
+    );
+  };
+
+  const handlePreviousAvatars = () => {
+    setAvatarIndex((prevIndex) => Math.max(prevIndex - avatarsPerPage, 0));
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
-
     post(route("users.store"));
   };
 
@@ -31,7 +74,7 @@ export default function Create({ auth }) {
         </div>
       }
     >
-      <Head title="Projects" />
+      <Head title="Users" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -50,7 +93,7 @@ export default function Create({ auth }) {
                   value={data.name}
                   className="mt-1 block w-full"
                   isFocused={true}
-                  onChange={(e) => setData("name", e.target.value)}
+                  onChange={handleInputChange}
                 />
 
                 <InputError message={errors.name} className="mt-2" />
@@ -64,7 +107,7 @@ export default function Create({ auth }) {
                   name="address"
                   value={data.address}
                   className="mt-1 block w-full"
-                  onChange={(e) => setData("address", e.target.value)}
+                  onChange={handleInputChange}
                 />
 
                 <InputError message={errors.address} className="mt-2" />
@@ -78,7 +121,7 @@ export default function Create({ auth }) {
                   name="phone_number"
                   value={data.phone_number}
                   className="mt-1 block w-full"
-                  onChange={(e) => setData("phone_number", e.target.value)}
+                  onChange={handleInputChange}
                 />
 
                 <InputError message={errors.phone_number} className="mt-2" />
@@ -92,10 +135,92 @@ export default function Create({ auth }) {
                   name="email"
                   value={data.email}
                   className="mt-1 block w-full"
-                  onChange={(e) => setData("email", e.target.value)}
+                  onChange={handleInputChange}
                 />
 
                 <InputError message={errors.email} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="user_role" value="Role" />
+
+                <SelectInput
+                  id="user_role"
+                  name="role"
+                  value={data.role}
+                  className="mt-1 block w-full"
+                  onChange={handleInputChange}
+                >
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </SelectInput>
+
+                <InputError message={errors.role} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="user_avatar" value="Avatar" />
+
+                <div className="flex items-center space-x-4 mt-2">
+                  <button
+                    type="button"
+                    onClick={handlePreviousAvatars}
+                    disabled={avatarIndex === 0}
+                    className="bg-gray-200 p-2 rounded"
+                  >
+                    &lt;
+                  </button>
+                  <div className="flex space-x-2">
+                    {avatars
+                      .slice(avatarIndex, avatarIndex + avatarsPerPage)
+                      .map((avatar, index) => (
+                        <img
+                          key={index}
+                          src={avatar}
+                          alt={`Avatar ${index + 1}`}
+                          className={`w-10 h-10 cursor-pointer ${
+                            selectedAvatar === avatar
+                              ? "border-2 border-blue-500"
+                              : ""
+                          }`}
+                          onClick={() => handleAvatarSelect(avatar)}
+                        />
+                      ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleNextAvatars}
+                    disabled={avatarIndex + avatarsPerPage >= avatars.length}
+                    className="bg-gray-200 p-2 rounded"
+                  >
+                    &gt;
+                  </button>
+                </div>
+
+                {selectedAvatar && (
+                  <div className="mt-4">
+                    <InputLabel value="Selected Avatar" />
+                    <img
+                      src={selectedAvatar}
+                      alt="Selected Avatar"
+                      className="w-10 h-10 mt-2"
+                    />
+                  </div>
+                )}
+
+                <InputError message={errors.avatar} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="user_phone" value="Phone" />
+
+                <TextInput
+                  id="user_phone"
+                  type="text"
+                  name="phone"
+                  value={data.phone}
+                  className="mt-1 block w-full"
+                  onChange={handleInputChange}
+                />
+
+                <InputError message={errors.phone} className="mt-2" />
               </div>
               <div className="mt-4 text-right">
                 <Link

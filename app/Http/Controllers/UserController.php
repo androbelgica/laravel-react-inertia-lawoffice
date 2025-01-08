@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -13,7 +15,28 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $query = User::query();
+
+        $sortFields = request("sort_field", "created_at");
+        $sortDirections = request("sort_direction", "desc");
+
+        if (request('name')) {
+            $query->where('name', 'like', '%' . request('name') . '%');
+        }
+
+        if (request('role')) {
+            $query->where('role', request('role'));
+        }
+
+        $users = $query->orderBy($sortFields, $sortDirections)
+            ->paginate(10)
+            ->onEachSide(1);
+
+        return inertia('User/Index', [
+            "users" => UserResource::collection($users),
+            'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
+        ]);
     }
 
     /**
@@ -21,7 +44,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('User/Create');
     }
 
     /**
@@ -29,7 +52,11 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        //
+        $data = $request->validated();
+       
+        User::create($data);
+
+        return to_route('users.index')->with('success', 'User was added successfully');
     }
 
     /**
@@ -37,7 +64,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        // ...
     }
 
     /**
@@ -45,7 +72,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return inertia('User/Edit', [
+            'user' => new UserResource($user),
+        ]);
     }
 
     /**
@@ -53,7 +82,13 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $data = $request->validated();
+        $data['updated_by'] = Auth::id();
+
+        $user->update($data);
+
+        return to_route('users.index')
+            ->with('success', "User informations of \"$user->name\" was updated");
     }
 
     /**
@@ -61,6 +96,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $name = $user->name;
+        $user->delete();
+        return to_route('users.index')->with(
+            'success',
+            "User \"$name\" was deleted successfully"
+        );
     }
 }

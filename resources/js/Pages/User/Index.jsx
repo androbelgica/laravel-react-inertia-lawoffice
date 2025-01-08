@@ -2,6 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Pagination from "@/Components/Pagination";
 import TextInput from "@/Components/TextInput";
 import TableHeading from "@/Components/TableHeading";
+import SelectInput from "@/Components/SelectInput";
 import { Head, Link, router } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 
@@ -139,15 +140,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
                       >
                         Email
                       </TableHeading>
-                      <TableHeading
-                        name="created_by"
-                        sortable={true}
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        Created By
-                      </TableHeading>
+
                       <TableHeading
                         name="created_at"
                         sortable={true}
@@ -156,6 +149,27 @@ export default function Index({ auth, users, queryParams = null, success }) {
                         sortChanged={sortChanged}
                       >
                         Created At
+                      </TableHeading>
+                      <TableHeading
+                        name="role"
+                        sortable={true}
+                        sort_field={queryParams.sort_field}
+                        sort_direction={queryParams.sort_direction}
+                        sortChanged={sortChanged}
+                      >
+                        Role
+                      </TableHeading>
+                      <TableHeading name="avatar" sortable={false}>
+                        Avatar
+                      </TableHeading>
+                      <TableHeading
+                        name="phone"
+                        sortable={true}
+                        sort_field={queryParams.sort_field}
+                        sort_direction={queryParams.sort_direction}
+                        sortChanged={sortChanged}
+                      >
+                        Phone
                       </TableHeading>
                       <th className="px-3 py-3 text-right">Actions</th>
                     </tr>
@@ -178,7 +192,32 @@ export default function Index({ auth, users, queryParams = null, success }) {
                       <th className="px-3 py-3"></th>
                       <th className="px-3 py-3"></th>
                       <th className="px-3 py-3"></th>
+                      <th className="px-3 py-3">
+                        <SelectInput
+                          className="w-full"
+                          defaultValue={queryParams.role}
+                          onChange={(e) =>
+                            searchFieldChanged("role", e.target.value)
+                          }
+                        >
+                          <option value="">All Roles</option>
+                          <option value="admin">Admin</option>
+                          <option value="user">User</option>
+                        </SelectInput>
+                      </th>
                       <th className="px-3 py-3"></th>
+                      <th className="px-3 py-3"></th>
+                      <th className="px-3 py-3">
+                        <TextInput
+                          className="w-full"
+                          defaultValue={queryParams.phone}
+                          placeholder="Phone"
+                          onBlur={(e) =>
+                            searchFieldChanged("phone", e.target.value)
+                          }
+                          onKeyPress={(e) => onKeyPress("phone", e)}
+                        />
+                      </th>
                       <th className="px-3 py-3"></th>
                     </tr>
                   </thead>
@@ -195,8 +234,16 @@ export default function Index({ auth, users, queryParams = null, success }) {
                           {user.phone_number}
                         </td>
                         <td className="px-3 py-2">{user.email}</td>
-                        <td className="px-3 py-2">{user.created_by.name}</td>
                         <td className="px-3 py-2">{user.created_at}</td>
+                        <td className="px-3 py-2">{user.role}</td>
+                        <td className="px-3 py-2">
+                          <img
+                            src={user.avatar}
+                            alt="avatar"
+                            className="w-8 h-8 rounded-full"
+                          />
+                        </td>
+                        <td className="px-3 py-2">{user.phone}</td>
                         <td className="px-3 py-2 text-nowrap">
                           <Link
                             href={route("users.edit", user.id)}

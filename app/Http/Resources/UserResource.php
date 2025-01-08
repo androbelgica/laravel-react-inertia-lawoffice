@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 class UserResource extends JsonResource
 {
+    public static $wrap = false;
     /**
      * Transform the resource into an array.
      *
@@ -18,7 +19,13 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'role' => $this->role,
+            'avatar' => $this->avatar,
+            'phone' => $this->phone,
+            'address' => $this->address,
             'email' => $this->email,
+            "created_at" => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+
 
         ];
     }

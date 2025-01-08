@@ -21,6 +21,8 @@
         "vite": "^6.0"
     },
     "dependencies": {
+        "@dicebear/collection": "^9.2.2",
+        "@dicebear/core": "^9.2.2",
         "@heroicons/react": "^2.2.0"
     }
 }

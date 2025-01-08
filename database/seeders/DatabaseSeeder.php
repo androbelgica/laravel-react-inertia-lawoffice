@@ -22,6 +22,10 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
             'name' => 'Andsmarian',
+            'role' => 'admin',
+            'avatar' => 'https://i.pravatar.cc/150?u=Andsmarian',
+            'phone' => '081234567890',
+            'address' => 'Jl. Lorem Ipsum Dolor Sit Amet',
             'email' => 'test@example.com',
             'password' => bcrypt('andsmarian0305'),
             'email_verified_at' => now(),
