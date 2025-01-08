@@ -25,6 +25,7 @@ class UpdateLawyerRequest extends FormRequest
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:15',
             'email' => 'required|email|max:255',
+
         ];
     }
 }

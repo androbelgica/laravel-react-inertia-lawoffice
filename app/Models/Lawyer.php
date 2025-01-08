@@ -15,6 +15,7 @@ class Lawyer extends Model
         'email',
         'created_by',
         'updated_by',
+
     ];
 
     public function lawsuits()

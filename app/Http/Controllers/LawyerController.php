@@ -52,6 +52,8 @@ class LawyerController extends Controller
         $data = $request->validated();
         $data['created_by'] = Auth::id();
         $data['updated_by'] = Auth::id();
+
+
         Lawyer::create($data);
 
         return to_route('lawyers.index')->with('success', 'Lawyer created successfully.');
@@ -84,6 +86,7 @@ class LawyerController extends Controller
     {
         $data = $request->validated();
         $data['updated_by'] = Auth::id();
+
 
         $lawyer->update($data);
 

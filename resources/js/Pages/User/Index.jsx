@@ -159,9 +159,6 @@ export default function Index({ auth, users, queryParams = null, success }) {
                       >
                         Role
                       </TableHeading>
-                      <TableHeading name="avatar" sortable={false}>
-                        Avatar
-                      </TableHeading>
                       <TableHeading
                         name="phone"
                         sortable={true}
@@ -236,13 +233,6 @@ export default function Index({ auth, users, queryParams = null, success }) {
                         <td className="px-3 py-2">{user.email}</td>
                         <td className="px-3 py-2">{user.created_at}</td>
                         <td className="px-3 py-2">{user.role}</td>
-                        <td className="px-3 py-2">
-                          <img
-                            src={user.avatar}
-                            alt="avatar"
-                            className="w-8 h-8 rounded-full"
-                          />
-                        </td>
                         <td className="px-3 py-2">{user.phone}</td>
                         <td className="px-3 py-2 text-nowrap">
                           <Link
