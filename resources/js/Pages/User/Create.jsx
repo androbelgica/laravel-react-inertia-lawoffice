@@ -118,7 +118,7 @@ export default function Create({ auth }) {
 
                 <InputError message={errors.role} className="mt-2" />
               </div>
-             
+
               <div className="mt-4 text-right">
                 <Link
                   href={route("users.index")}
