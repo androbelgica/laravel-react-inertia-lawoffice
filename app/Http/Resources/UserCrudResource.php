@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Carbon\Carbon;
 
-class UserResource extends JsonResource
+class UserCrudResource extends JsonResource
 {
     public static $wrap = false;
     /**
@@ -20,7 +20,11 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'role' => $this->role,
+            'phone_number' => $this->phone_number,
+            'address' => $this->address,
             'email' => $this->email,
+            "created_at" => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+
 
         ];
     }

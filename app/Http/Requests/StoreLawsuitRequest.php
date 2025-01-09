@@ -11,7 +11,7 @@ class StoreLawsuitRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class StoreLawsuitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string|max:255',
+            'case_number' => 'required|string|max:255',
+            'case_type' => 'required|string|max:255',
+            'case_status' => 'required|string|max:255',
+            'client_id' => 'required|exists:clients,id',
+            'lawyer_id' => 'required|exists:lawyers,id',
+            'created_by' => 'required|exists:users,id',
         ];
     }
 }

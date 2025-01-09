@@ -6,7 +6,7 @@ import SelectInput from "@/Components/SelectInput";
 import { Head, Link, router } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 
-export default function Index({ auth, users, queryParams = null, success }) {
+export default function Index({ auth, users, queryParams = null, success, warning }) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -48,7 +48,11 @@ export default function Index({ auth, users, queryParams = null, success }) {
     if (!window.confirm("Are you sure you want to delete this user?")) {
       return;
     }
-    router.delete(route("users.destroy", user.id));
+    router.delete(route("users.destroy", user.id), {
+      onSuccess: () => {
+        router.get(route("users.index"));
+      },
+    });
   };
 
   const [showSuccess, setShowSuccess] = useState(true);
@@ -86,6 +90,11 @@ export default function Index({ auth, users, queryParams = null, success }) {
           {success && showSuccess && (
             <div className="bg-emerald-500 py-2 px-4 text-white rounded mb-4 transition-opacity duration-1000 ease-out">
               {success}
+            </div>
+          )}
+          {warning && (
+            <div className="bg-yellow-500 py-2 px-4 text-white rounded mb-4 transition-opacity duration-1000 ease-out">
+              {warning}
             </div>
           )}
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -157,7 +166,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        Role
+                        User Role
                       </TableHeading>
                       <TableHeading
                         name="phone"
@@ -187,11 +196,21 @@ export default function Index({ auth, users, queryParams = null, success }) {
                       </th>
                       <th className="px-3 py-3"></th>
                       <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3"></th>
                       <th className="px-3 py-3">
-                        <SelectInput
+                        <TextInput
                           className="w-full"
+                          defaultValue={queryParams.email}
+                          placeholder="Email"
+                          onBlur={(e) =>
+                            searchFieldChanged("email", e.target.value)
+                          }
+                          onKeyPress={(e) => onKeyPress("email", e)}
+                        />
+                      </th>
+                      <th className="px-3 py-3"></th>
+                      <th className="px-3 py-3 text-nowrap">
+                        <SelectInput
+                          className="w-30" // Adjusted width to approximately 15 characters
                           defaultValue={queryParams.role}
                           onChange={(e) =>
                             searchFieldChanged("role", e.target.value)
@@ -204,17 +223,6 @@ export default function Index({ auth, users, queryParams = null, success }) {
                       </th>
                       <th className="px-3 py-3"></th>
                       <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3">
-                        <TextInput
-                          className="w-full"
-                          defaultValue={queryParams.phone}
-                          placeholder="Phone"
-                          onBlur={(e) =>
-                            searchFieldChanged("phone", e.target.value)
-                          }
-                          onKeyPress={(e) => onKeyPress("phone", e)}
-                        />
-                      </th>
                       <th className="px-3 py-3"></th>
                     </tr>
                   </thead>
@@ -242,7 +250,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
                             Edit
                           </Link>
                           <button
-                            onClick={(e) => deleteUser(user)}
+                            onClick={() => deleteUser(user)}
                             className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
                           >
                             Delete

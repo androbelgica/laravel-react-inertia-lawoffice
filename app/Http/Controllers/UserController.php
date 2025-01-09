@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\UserCrudResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,14 +29,19 @@ class UserController extends Controller
             $query->where('role', request('role'));
         }
 
+        if (request('email')) {
+            $query->where('email', 'like', '%' . request('email') . '%');
+        }
+
         $users = $query->orderBy($sortFields, $sortDirections)
             ->paginate(10)
             ->onEachSide(1);
 
         return inertia('User/Index', [
-            "users" => UserResource::collection($users),
+            "users" => UserCrudResource::collection($users),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
+            'warning' => session('warning'), // Include warning message
         ]);
     }
 
@@ -73,7 +78,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         return inertia('User/Edit', [
-            'user' => new UserResource($user),
+            'user' => new UserCrudResource($user),
         ]);
     }
 
@@ -83,6 +88,11 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $data = $request->validated();
+        if (!empty($data['password'])) {
+            $data['password'] = bcrypt($data['password']); // Hash the password if provided
+        } else {
+            unset($data['password']); // Remove password from data if not provided
+        }
         $data['updated_by'] = Auth::id();
 
         $user->update($data);
@@ -97,10 +107,20 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $name = $user->name;
-        $user->delete();
-        return to_route('users.index')->with(
-            'success',
-            "User \"$name\" was deleted successfully"
-        );
+        try {
+            $user->delete();
+            return to_route('users.index')->with(
+                'success',
+                "User \"$name\" was deleted successfully"
+            );
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() === '23000') { // Foreign key constraint violation
+                return to_route('users.index')->with(
+                    'warning',
+                    "User \"$name\" cannot be deleted because it has dependent records."
+                );
+            }
+            throw $e;
+        }
     }
 }

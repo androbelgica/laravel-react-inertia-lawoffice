@@ -9,6 +9,17 @@ class Lawsuit extends Model
 {
     /** @use HasFactory<\Database\Factories\LawsuitFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'case_number',
+        'case_type',
+        'case_status',
+        'client_id',
+        'lawyer_id',
+        'created_by',
+    ];
+
     public function lawsuit_tasks()
     {
         return $this->hasMany(LawsuitTask::class);

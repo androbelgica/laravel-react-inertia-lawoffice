@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lawsuit;
+use App\Models\Client;
+use App\Models\Lawyer;
+use App\Models\User;
 use App\Http\Resources\LawsuitResource;
 use App\Http\Resources\LawsuitTaskResource;
 use App\Http\Requests\StoreLawsuitRequest;
@@ -51,7 +54,11 @@ class LawsuitController extends Controller
      */
     public function create()
     {
-        return inertia('Lawsuit/Create');
+        return inertia('Lawsuit/Create', [
+            'clients' => Client::all(),
+            'lawyers' => Lawyer::all(),
+            'users' => User::all(),
+        ]);
     }
 
     /**
@@ -59,7 +66,9 @@ class LawsuitController extends Controller
      */
     public function store(StoreLawsuitRequest $request)
     {
-        //
+        $lawsuit = Lawsuit::create($request->validated());
+
+        return redirect()->route('lawsuits.index')->with('success', 'Lawsuit created successfully.');
     }
 
     /**
