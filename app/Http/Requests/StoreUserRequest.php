@@ -27,6 +27,7 @@ class StoreUserRequest extends FormRequest
             'phone_number' => 'required|string|max:20',
             'email' => 'required|string|email|max:255|unique:users',
             'role' => 'required|string|in:admin,user',
+            'password' => 'required|string|min:8|confirmed', // Add password confirmation validation
         ];
     }
 }

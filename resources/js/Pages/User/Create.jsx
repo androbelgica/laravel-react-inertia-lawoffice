@@ -5,14 +5,21 @@ import SelectInput from "@/Components/SelectInput";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 export default function Create({ auth }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
+
   const { data, setData, post, errors, reset } = useForm({
     name: "",
     address: "",
     phone_number: "",
     email: "",
     role: "user",
+    password: "",
+    password_confirmation: "",
   });
 
   const handleInputChange = (e) => {
@@ -22,7 +29,16 @@ export default function Create({ auth }) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    post(route("users.store"));
+    if (data.password !== data.password_confirmation) {
+      setPasswordMismatch(true);
+      return;
+    }
+    setPasswordMismatch(false);
+    post(route("users.store"), {
+      onError: () => {
+        reset("password", "password_confirmation");
+      },
+    });
   };
 
   return (
@@ -117,6 +133,55 @@ export default function Create({ auth }) {
                 </SelectInput>
 
                 <InputError message={errors.role} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="user_password" value="Password" />
+
+                <div className="relative">
+                  <TextInput
+                    id="user_password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={data.password}
+                    className="mt-1 block w-full"
+                    onChange={handleInputChange}
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-white"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </button>
+                </div>
+
+                <InputError message={errors.password} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="user_password_confirmation"
+                  value="Confirm Password"
+                />
+
+                <TextInput
+                  id="user_password_confirmation"
+                  type="password"
+                  name="password_confirmation"
+                  value={data.password_confirmation}
+                  className="mt-1 block w-full"
+                  onChange={handleInputChange}
+                />
+
+                <InputError
+                  message={errors.password_confirmation}
+                  className="mt-2"
+                />
+                {passwordMismatch && (
+                  <InputError
+                    message="Passwords do not match"
+                    className="mt-2"
+                  />
+                )}
               </div>
 
               <div className="mt-4 text-right">
