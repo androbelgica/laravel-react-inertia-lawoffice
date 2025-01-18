@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\OtherLegalService;
+use App\Models\Client;
+use App\Models\User;
 use App\Http\Requests\StoreOtherLegalServiceRequest;
 use App\Http\Requests\UpdateOtherLegalServiceRequest;
 use App\Http\Resources\OtherLegalServiceResource;
+use Illuminate\Support\Facades\Auth;
 
 class OtherLegalServiceController extends Controller
 {
@@ -42,7 +45,10 @@ class OtherLegalServiceController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('OtherLegalServices/Create', [
+            'clients' => Client::all(),
+            'users' => User::all(),
+        ]);
     }
 
     /**
@@ -50,7 +56,13 @@ class OtherLegalServiceController extends Controller
      */
     public function store(StoreOtherLegalServiceRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['created_by'] = Auth::id();
+        $data['updated_by'] = Auth::id();
+
+        OtherLegalService::create($data);
+
+        return to_route('other-legal-services.index')->with('success', 'Other Legal Service created successfully.');
     }
 
     /**
@@ -58,7 +70,9 @@ class OtherLegalServiceController extends Controller
      */
     public function show(OtherLegalService $otherLegalService)
     {
-        //
+        return inertia('OtherLegalServices/Show', [
+            'other_legal_service' => new OtherLegalServiceResource($otherLegalService),
+        ]);
     }
 
     /**
@@ -66,7 +80,11 @@ class OtherLegalServiceController extends Controller
      */
     public function edit(OtherLegalService $otherLegalService)
     {
-        //
+        return inertia('OtherLegalServices/Edit', [
+            'other_legal_service' => new OtherLegalServiceResource($otherLegalService),
+            'clients' => Client::all(),
+            'users' => User::all(),
+        ]);
     }
 
     /**
@@ -74,7 +92,12 @@ class OtherLegalServiceController extends Controller
      */
     public function update(UpdateOtherLegalServiceRequest $request, OtherLegalService $otherLegalService)
     {
-        //
+        $data = $request->validated();
+        $data['updated_by'] = Auth::id();
+
+        $otherLegalService->update($data);
+
+        return to_route('other-legal-services.index')->with('success', 'Other Legal Service updated successfully.');
     }
 
     /**
@@ -82,6 +105,11 @@ class OtherLegalServiceController extends Controller
      */
     public function destroy(OtherLegalService $otherLegalService)
     {
-        //
+        $serviceName = $otherLegalService->service_name;
+        $otherLegalService->delete();
+        return to_route('other-legal-services.index')->with(
+            'success',
+            "Other Legal Service \"$serviceName\" was deleted successfully"
+        );
     }
 }
