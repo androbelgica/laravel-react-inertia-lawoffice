@@ -8,8 +8,12 @@ use App\Models\Lawyer;
 use App\Models\User;
 use App\Http\Resources\LawsuitResource;
 use App\Http\Resources\LawsuitTaskResource;
+use App\Http\Resources\ClientResource;
+use App\Http\Resources\LawyerResource;
+use App\Http\Resources\UserResource;
 use App\Http\Requests\StoreLawsuitRequest;
 use App\Http\Requests\UpdateLawsuitRequest;
+use Illuminate\Support\Facades\Auth;
 
 class LawsuitController extends Controller
 {
@@ -47,6 +51,7 @@ class LawsuitController extends Controller
         return inertia('Lawsuit/Index', [
             "lawsuits" => LawsuitResource::collection($lawsuits),
             'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
         ]);
     }
     /**
@@ -54,6 +59,8 @@ class LawsuitController extends Controller
      */
     public function create()
     {
+
+
         return inertia('Lawsuit/Create', [
             'clients' => Client::all(),
             'lawyers' => Lawyer::all(),
@@ -66,9 +73,16 @@ class LawsuitController extends Controller
      */
     public function store(StoreLawsuitRequest $request)
     {
-        $lawsuit = Lawsuit::create($request->validated());
 
-        return redirect()->route('lawsuits.index')->with('success', 'Lawsuit created successfully.');
+        $data = $request->validated();
+        $data['created_by'] = Auth::id();
+        $data['updated_by'] = Auth::id();
+
+
+        Lawsuit::create($data);
+
+
+        return to_route('lawsuits.index')->with('success', 'Lawsuit created successfully.');
     }
 
     /**
@@ -103,6 +117,7 @@ class LawsuitController extends Controller
             'lawsuit' => new LawsuitResource($lawsuit),
             "lawsuit_tasks" => LawsuitTaskResource::collection($lawsuit_tasks),
             'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
         ]);
     }
 
@@ -111,7 +126,15 @@ class LawsuitController extends Controller
      */
     public function edit(Lawsuit $lawsuit)
     {
-        //
+        $clients = Client::query()->orderBy('name', 'asc')->get();
+        $lawyers = Lawyer::query()->orderBy('name', 'asc')->get();
+        $users = User::query()->orderBy('name', 'asc')->get();
+        return inertia('Lawsuit/Edit', [
+            'lawsuit' => new LawsuitResource($lawsuit),
+            'clients' => ClientResource::collection($clients),
+            'lawyers' => LawyerResource::collection($lawyers),
+            'users' => UserResource::collection($users),
+        ]);
     }
 
     /**
@@ -119,7 +142,12 @@ class LawsuitController extends Controller
      */
     public function update(UpdateLawsuitRequest $request, Lawsuit $lawsuit)
     {
-        //
+        $data = $request->validated();
+        $data['updated_by'] = Auth::id();
+
+        $lawsuit->update($data);
+
+        return to_route('lawsuits.index')->with('success', 'Lawsuit updated successfully.');
     }
 
     /**
@@ -127,6 +155,11 @@ class LawsuitController extends Controller
      */
     public function destroy(Lawsuit $lawsuit)
     {
-        //
+        $title = $lawsuit->title;
+        $lawsuit->delete();
+        return to_route('lawsuits.index')->with(
+            'success',
+            "Lawsuit \"$title\" was deleted successfully"
+        );
     }
 }

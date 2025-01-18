@@ -6,19 +6,22 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
-export default function Edit({ auth, client }) {
- 
+export default function Edit({ auth, lawsuit, clients, lawyers, users }) {
   const { data, setData, put, errors, reset } = useForm({
-    name: client.name || "",
-    address: client.address || "",
-    phone_number: client.phone_number || "",
-    email: client.email || "",
+    title: lawsuit.title,
+    case_number: lawsuit.case_number,
+    case_type: lawsuit.case_type,
+    case_status: lawsuit.case_status,
+    court_name: lawsuit.court_name,
+    client_id: lawsuit.client_id,
+    lawyer_id: lawsuit.lawyer_id,
+    open_date: lawsuit.open_date,
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    put(route("clients.update", client.id));
+    put(route("lawsuits.update", lawsuit.id));
   };
 
   return (
@@ -27,12 +30,12 @@ export default function Edit({ auth, client }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Edit Client - {client.name}
+            Edit Case - {lawsuit.title}
           </h2>
         </div>
       }
     >
-      <Head title="Edit Client" />
+      <Head title="Edit Case" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -42,65 +45,158 @@ export default function Edit({ auth, client }) {
               className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
             >
               <div className="mt-4">
-                <InputLabel htmlFor="client_name" value="Client Name" />
+                <InputLabel htmlFor="lawsuit_title" value="Lawsuit Title" />
 
                 <TextInput
-                  id="client_name"
+                  id="lawsuit_title"
                   type="text"
-                  name="name"
-                  value={data.name}
+                  name="title"
+                  value={data.title}
                   className="mt-1 block w-full"
                   isFocused={true}
-                  onChange={(e) => setData("name", e.target.value)}
+                  onChange={(e) => setData("title", e.target.value)}
                 />
 
-                <InputError message={errors.name} className="mt-2" />
+                <InputError message={errors.title} className="mt-2" />
               </div>
               <div className="mt-4">
-                <InputLabel htmlFor="client_address" value="Client Address" />
+                <InputLabel htmlFor="case_number" value="Case Number" />
 
                 <TextInput
-                  id="client_address"
+                  id="case_number"
                   type="text"
-                  name="address"
-                  value={data.address}
+                  name="case_number"
+                  value={data.case_number}
                   className="mt-1 block w-full"
-                  onChange={(e) => setData("address", e.target.value)}
+                  onChange={(e) => setData("case_number", e.target.value)}
                 />
 
-                <InputError message={errors.address} className="mt-2" />
+                <InputError message={errors.case_number} className="mt-2" />
               </div>
               <div className="mt-4">
-                <InputLabel htmlFor="client_phone_number" value="Phone Number" />
+                <InputLabel htmlFor="case_type" value="Case Type" />
+
+                <SelectInput
+                  id="case_type"
+                  name="case_type"
+                  value={data.case_type}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("case_type", e.target.value)}
+                >
+                  <option value="">Select Case Type</option>
+                  <option value="criminal">Criminal</option>
+                  <option value="civil">Civil</option>
+                  <option value="administrative">Administrative</option>
+                  <option value="election">Election</option>
+                  <option value="labor">Labor</option>
+                  <option value="tax">Tax</option>
+                  <option value="environmental">Environmental</option>
+                  <option value="intellectual property">
+                    Intellectual Property
+                  </option>
+                </SelectInput>
+
+                <InputError message={errors.case_type} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="case_status" value="Case Status" />
+
+                <SelectInput
+                  id="case_status"
+                  name="case_status"
+                  value={data.case_status}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("case_status", e.target.value)}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="ongoing">Ongoing</option>
+                  <option value="closed">Closed</option>
+                  <option value="decided">Decided</option>
+                  <option value="dismissed">Dismissed</option>
+                  <option value="appealed">Appealed</option>
+                  <option value="remanded">Remanded</option>
+                  <option value="settled">Settled</option>
+                  <option value="withdrawn">Withdrawn</option>
+                </SelectInput>
+
+                <InputError message={errors.case_status} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="court_name" value="Court Name" />
 
                 <TextInput
-                  id="client_phone_number"
+                  id="court_name"
                   type="text"
-                  name="phone_number"
-                  value={data.phone_number}
+                  name="court_name"
+                  value={data.court_name}
                   className="mt-1 block w-full"
-                  onChange={(e) => setData("phone_number", e.target.value)}
+                  onChange={(e) => setData("court_name", e.target.value)}
                 />
 
-                <InputError message={errors.phone_number} className="mt-2" />
+                <InputError message={errors.court_name} className="mt-2" />
               </div>
               <div className="mt-4">
-                <InputLabel htmlFor="client_email" value="Email" />
+                <InputLabel htmlFor="client_id" value="Client" />
+
+                <SelectInput
+                  id="client_id"
+                  name="client_id"
+                  value={data.client_id}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("client_id", e.target.value)}
+                >
+                  <option value={lawsuit.client_id}>
+                    {lawsuit.client ? lawsuit.client.name : "Select Client"}
+                  </option>
+                  {clients.map((client) => (
+                    <option key={client.id} value={client.id}>
+                      {client.name}
+                    </option>
+                  ))}
+                </SelectInput>
+
+                <InputError message={errors.client_id} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="lawyer_id" value="Lawyer" />
+
+                <SelectInput
+                  id="lawyer_id"
+                  name="lawyer_id"
+                  value={data.lawyer_id}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("lawyer_id", e.target.value)}
+                >
+                  <option value={lawsuit.lawyer_id}>
+                    {lawsuit.lawyer ? lawsuit.lawyer.name : "Select Lawyer"}
+                  </option>
+                  {lawyers.map((lawyer) => (
+                    <option key={lawyer.id} value={lawyer.id}>
+                      {lawyer.name}
+                    </option>
+                  ))}
+                </SelectInput>
+
+                <InputError message={errors.lawyer_id} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="open_date" value="Open Date" />
 
                 <TextInput
-                  id="client_email"
-                  type="email"
-                  name="email"
-                  value={data.email}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("email", e.target.value)}
+                  id="open_date"
+                  type="date"
+                  name="open_date"
+                  value={data.open_date}
+                  className="mt-1 block w-full text-white"
+                  onChange={(e) => setData("open_date", e.target.value)}
+                  style={{ colorScheme: "dark" }}
                 />
 
-                <InputError message={errors.email} className="mt-2" />
+                <InputError message={errors.open_date} className="mt-2" />
               </div>
               <div className="mt-4 text-right">
                 <Link
-                  href={route("clients.index")}
+                  href={route("lawsuits.index")}
                   className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                 >
                   Cancel

@@ -6,15 +6,16 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
-export default function Create({ auth, clients, lawyers, users }) {
+export default function Create({ auth, clients = [], lawyers = [] }) {
   const { data, setData, post, errors, reset } = useForm({
     title: "",
     case_number: "",
     case_type: "",
-    case_status: "",
+    case_status: "Pending",
+    court_name: "",
     client_id: "",
     lawyer_id: "",
-    created_by: "",
+    open_date: "",
   });
 
   const onSubmit = (e) => {
@@ -22,6 +23,10 @@ export default function Create({ auth, clients, lawyers, users }) {
 
     post(route("lawsuits.store"));
   };
+
+  // Sort clients and lawyers alphabetically by name
+  const sortedClients = clients.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedLawyers = lawyers.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <AuthenticatedLayout
@@ -75,30 +80,64 @@ export default function Create({ auth, clients, lawyers, users }) {
               <div className="mt-4">
                 <InputLabel htmlFor="case_type" value="Case Type" />
 
-                <TextInput
+                <SelectInput
                   id="case_type"
-                  type="text"
                   name="case_type"
                   value={data.case_type}
                   className="mt-1 block w-full"
                   onChange={(e) => setData("case_type", e.target.value)}
-                />
+                >
+                  <option value="">Select Case Type</option>
+                  <option value="criminal">Criminal</option>
+                  <option value="civil">Civil</option>
+                  <option value="administrative">Administrative</option>
+                  <option value="election">Election</option>
+                  <option value="labor">Labor</option>
+                  <option value="tax">Tax</option>
+                  <option value="environmental">Environmental</option>
+                  <option value="intellectual property">
+                    Intellectual Property
+                  </option>
+                </SelectInput>
 
                 <InputError message={errors.case_type} className="mt-2" />
               </div>
               <div className="mt-4">
                 <InputLabel htmlFor="case_status" value="Case Status" />
 
-                <TextInput
+                <SelectInput
                   id="case_status"
-                  type="text"
                   name="case_status"
                   value={data.case_status}
                   className="mt-1 block w-full"
                   onChange={(e) => setData("case_status", e.target.value)}
-                />
+                >
+                  <option value="pending">Pending</option>
+                  <option value="ongoing">Ongoing</option>
+                  <option value="closed">Closed</option>
+                  <option value="decided">Decided</option>
+                  <option value="dismissed">Dismissed</option>
+                  <option value="appealed">Appealed</option>
+                  <option value="remanded">Remanded</option>
+                  <option value="settled">Settled</option>
+                  <option value="withdrawn">Withdrawn</option>
+                </SelectInput>
 
                 <InputError message={errors.case_status} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="court_name" value="Court Name" />
+
+                <TextInput
+                  id="court_name"
+                  type="text"
+                  name="court_name"
+                  value={data.court_name}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("court_name", e.target.value)}
+                />
+
+                <InputError message={errors.court_name} className="mt-2" />
               </div>
               <div className="mt-4">
                 <InputLabel htmlFor="client_id" value="Client" />
@@ -111,7 +150,7 @@ export default function Create({ auth, clients, lawyers, users }) {
                   onChange={(e) => setData("client_id", e.target.value)}
                 >
                   <option value="">Select Client</option>
-                  {clients.map((client) => (
+                  {sortedClients.map((client) => (
                     <option key={client.id} value={client.id}>
                       {client.name}
                     </option>
@@ -131,7 +170,7 @@ export default function Create({ auth, clients, lawyers, users }) {
                   onChange={(e) => setData("lawyer_id", e.target.value)}
                 >
                   <option value="">Select Lawyer</option>
-                  {lawyers.map((lawyer) => (
+                  {sortedLawyers.map((lawyer) => (
                     <option key={lawyer.id} value={lawyer.id}>
                       {lawyer.name}
                     </option>
@@ -141,24 +180,19 @@ export default function Create({ auth, clients, lawyers, users }) {
                 <InputError message={errors.lawyer_id} className="mt-2" />
               </div>
               <div className="mt-4">
-                <InputLabel htmlFor="created_by" value="Created By" />
+                <InputLabel htmlFor="open_date" value="Open Date" />
 
-                <SelectInput
-                  id="created_by"
-                  name="created_by"
-                  value={data.created_by}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("created_by", e.target.value)}
-                >
-                  <option value="">Select User</option>
-                  {users.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.name}
-                    </option>
-                  ))}
-                </SelectInput>
+                <TextInput
+                  id="open_date"
+                  type="date"
+                  name="open_date"
+                  value={data.open_date}
+                  className="mt-1 block w-full text-white"
+                  onChange={(e) => setData("open_date", e.target.value)}
+                  style={{ colorScheme: "dark" }}
+                />
 
-                <InputError message={errors.created_by} className="mt-2" />
+                <InputError message={errors.open_date} className="mt-2" />
               </div>
               <div className="mt-4 text-right">
                 <Link

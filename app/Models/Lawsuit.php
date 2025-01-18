@@ -15,9 +15,15 @@ class Lawsuit extends Model
         'case_number',
         'case_type',
         'case_status',
+        'court_name',
+        'open_date',
+        'close_date',
+        'assigned_to',
         'client_id',
         'lawyer_id',
         'created_by',
+        'updated_by',
+
     ];
 
     public function lawsuit_tasks()
@@ -48,5 +54,10 @@ class Lawsuit extends Model
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function assignedTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
     }
 }

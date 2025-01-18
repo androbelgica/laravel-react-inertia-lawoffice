@@ -24,6 +24,8 @@ class LawsuitResource extends JsonResource
             'case_status' => $this->case_status,
             'court_name' => $this->court_name,
             'open_date' => (new Carbon($this->open_date))->format('Y-m-d'),
+            'lawyer_id' => $this->lawyer_id,
+            'client_id' => $this->client_id,
             'close_date' => (new Carbon($this->close_date))->format('Y-m-d'),
             'lawyer' => new LawyerResource($this->lawyer),
             'client' => new ClientResource($this->client),

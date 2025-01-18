@@ -29,7 +29,7 @@ class LawsuitFactory extends Factory
                 'environmental',
                 'intellectual property'
             ]),
-            'case_status' => $this->faker->randomElement(['pending', 'decided', 'dismissed', 'appealed', 'remanded', 'settled']),
+            'case_status' => $this->faker->randomElement(['pending', 'decided', 'dismissed', 'appealed', 'remanded', 'settled', 'withdrawn']),
             'court_name' => $this->faker->word,
             'open_date' => $this->faker->dateTime,
             'close_date' => $this->faker->dateTime,

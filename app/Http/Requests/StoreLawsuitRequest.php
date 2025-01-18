@@ -26,9 +26,11 @@ class StoreLawsuitRequest extends FormRequest
             'case_number' => 'required|string|max:255',
             'case_type' => 'required|string|max:255',
             'case_status' => 'required|string|max:255',
+            'court_name' => 'required|string|max:255',
+            'open_date' => 'required|date',
+            'close_date' => 'nullable|date',
             'client_id' => 'required|exists:clients,id',
             'lawyer_id' => 'required|exists:lawyers,id',
-            'created_by' => 'required|exists:users,id',
         ];
     }
 }
