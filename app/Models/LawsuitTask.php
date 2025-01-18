@@ -9,15 +9,26 @@ class LawsuitTask extends Model
 {
     /** @use HasFactory<\Database\Factories\LawsuitTaskFactory> */
     use HasFactory;
+    protected $fillable = [
+        'task_name',
+        'description',
+        'priority',
+        'status',
+        'due_date',
+        'lawsuit_id',
+        'user_id',
+        'created_by',
+        'updated_by',
+    ];
 
     public function lawsuit()
     {
         return $this->belongsTo(Lawsuit::class);
     }
 
-    public function assignedTo()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function createdBy()

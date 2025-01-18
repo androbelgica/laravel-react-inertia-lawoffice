@@ -6,7 +6,7 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
-export default function Edit({ auth, lawsuit, clients, lawyers, users }) {
+export default function Edit({ auth, lawsuit, clients = [], lawyers = [] }) {
   const { data, setData, put, errors, reset } = useForm({
     title: lawsuit.title,
     case_number: lawsuit.case_number,
@@ -148,7 +148,7 @@ export default function Edit({ auth, lawsuit, clients, lawyers, users }) {
                   <option value={lawsuit.client_id}>
                     {lawsuit.client ? lawsuit.client.name : "Select Client"}
                   </option>
-                  {clients.map((client) => (
+                  {clients.data.map((client) => (
                     <option key={client.id} value={client.id}>
                       {client.name}
                     </option>
@@ -170,7 +170,7 @@ export default function Edit({ auth, lawsuit, clients, lawyers, users }) {
                   <option value={lawsuit.lawyer_id}>
                     {lawsuit.lawyer ? lawsuit.lawyer.name : "Select Lawyer"}
                   </option>
-                  {lawyers.map((lawyer) => (
+                  {lawyers.data.map((lawyer) => (
                     <option key={lawyer.id} value={lawyer.id}>
                       {lawyer.name}
                     </option>

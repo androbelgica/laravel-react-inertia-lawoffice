@@ -23,7 +23,7 @@ class LawsuitTaskFactory extends Factory
             'status' => $this->faker->randomElement(['pending', 'in_progress', 'completed']),
             'priority' => $this->faker->randomElement(['low', 'medium', 'high']),
             'lawsuit_id' => \App\Models\Lawsuit::factory(),
-            'assigned_to' => \App\Models\User::factory(),
+            'user_id' => \App\Models\User::factory(),
             'created_by' => \App\Models\User::factory(),
             'updated_by' => \App\Models\User::factory(),
         ];

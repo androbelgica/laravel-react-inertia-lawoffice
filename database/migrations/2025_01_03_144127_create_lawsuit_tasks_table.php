@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'in_progress', 'completed']);
             $table->enum('priority', ['low', 'medium', 'high']);
             $table->foreignId('lawsuit_id')->constrained('lawsuits');
-            $table->foreignId('assigned_to')->constrained('users');
+            $table->foreignId('user_id')->constrained('users');
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('updated_by')->constrained('users');
             $table->timestamps();

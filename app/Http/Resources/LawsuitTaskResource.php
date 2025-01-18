@@ -8,8 +8,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class LawsuitTaskResource extends JsonResource
 {
+    public static $wrap = false;
     /**
-     * Transform the resource into an array  .
+     * Transform the resource into an array.
      *
      * @return array<string, mixed>
      */
@@ -22,12 +23,13 @@ class LawsuitTaskResource extends JsonResource
             'priority' => $this->priority,
             'status' => $this->status,
             'due_date' => (new Carbon($this->due_date))->format('Y-m-d'),
+            'lawsuit_id' => $this->lawsuit_id, // Ensure lawsuit_id is included
+            'user_id' => $this->user_id, // Ensure user_id is included
             'lawsuit' => new LawsuitResource($this->lawsuit),
-            'assigned_to' => $this->assignedTo ? new UserResource($this->assignedTo) : null,
+            'user' => new UserResource($this->user),
             'created_by' => new UserResource($this->createdBy),
             'updated_by' => new UserResource($this->updatedBy),
             'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),
-
         ];
     }
 }
