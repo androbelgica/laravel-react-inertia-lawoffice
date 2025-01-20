@@ -6,22 +6,30 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
-export default function Edit({ auth, lawsuit, clients = [], lawyers = [] }) {
+export default function Edit({
+  auth,
+  other_service,
+  clients = [],
+  users = [],
+}) {
+  if (!other_service) {
+    return <div>Loading...</div>;
+  }
+
   const { data, setData, put, errors, reset } = useForm({
-    title: lawsuit.title,
-    case_number: lawsuit.case_number,
-    case_type: lawsuit.case_type,
-    case_status: lawsuit.case_status,
-    court_name: lawsuit.court_name,
-    client_id: lawsuit.client_id,
-    lawyer_id: lawsuit.lawyer_id,
-    open_date: lawsuit.open_date,
+    service_name: other_service.service_name,
+    description: other_service.description,
+    date_started: other_service.date_started,
+    date_ended: other_service.date_ended,
+    progress_status: other_service.progress_status,
+    client_id: other_service.client_id,
+    created_by: other_service.created_by,
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    put(route("lawsuits.update", lawsuit.id));
+    put(route("other-legal-services.update", other_service.id));
   };
 
   return (
@@ -30,183 +38,155 @@ export default function Edit({ auth, lawsuit, clients = [], lawyers = [] }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Edit Case - {lawsuit.title}
+            Edit Other Legal Service - {other_service.service_name}
           </h2>
         </div>
       }
     >
-      <Head title="Edit Case" />
+      <Head title="Edit Other Legal Service" />
 
-      <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-            <form
-              onSubmit={onSubmit}
-              className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
-            >
-              <div className="mt-4">
-                <InputLabel htmlFor="lawsuit_title" value="Lawsuit Title" />
+      <div className="py-12"></div>
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+          <form
+            onSubmit={onSubmit}
+            className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
+          >
+            <div className="mt-4">
+              <InputLabel htmlFor="service_name" value="Service Name" />
 
-                <TextInput
-                  id="lawsuit_title"
-                  type="text"
-                  name="title"
-                  value={data.title}
-                  className="mt-1 block w-full"
-                  isFocused={true}
-                  onChange={(e) => setData("title", e.target.value)}
-                />
+              <TextInput
+                id="service_name"
+                type="text"
+                name="service_name"
+                value={data.service_name}
+                className="mt-1 block w-full"
+                isFocused={true}
+                onChange={(e) => setData("service_name", e.target.value)}
+              />
 
-                <InputError message={errors.title} className="mt-2" />
-              </div>
-              <div className="mt-4">
-                <InputLabel htmlFor="case_number" value="Case Number" />
+              <InputError message={errors.service_name} className="mt-2" />
+            </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="description" value="Description" />
 
-                <TextInput
-                  id="case_number"
-                  type="text"
-                  name="case_number"
-                  value={data.case_number}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("case_number", e.target.value)}
-                />
+              <TextAreaInput
+                id="description"
+                name="description"
+                value={data.description}
+                className="mt-1 block w-full"
+                onChange={(e) => setData("description", e.target.value)}
+              />
 
-                <InputError message={errors.case_number} className="mt-2" />
-              </div>
-              <div className="mt-4">
-                <InputLabel htmlFor="case_type" value="Case Type" />
+              <InputError message={errors.description} className="mt-2" />
+            </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="date_started" value="Date Started" />
 
-                <SelectInput
-                  id="case_type"
-                  name="case_type"
-                  value={data.case_type}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("case_type", e.target.value)}
-                >
-                  <option value="">Select Case Type</option>
-                  <option value="criminal">Criminal</option>
-                  <option value="civil">Civil</option>
-                  <option value="administrative">Administrative</option>
-                  <option value="election">Election</option>
-                  <option value="labor">Labor</option>
-                  <option value="tax">Tax</option>
-                  <option value="environmental">Environmental</option>
-                  <option value="intellectual property">
-                    Intellectual Property
+              <TextInput
+                id="date_started"
+                type="date"
+                name="date_started"
+                value={data.date_started}
+                className="mt-1 block w-full text-white"
+                onChange={(e) => setData("date_started", e.target.value)}
+                style={{ colorScheme: "dark" }}
+              />
+
+              <InputError message={errors.date_started} className="mt-2" />
+            </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="date_ended" value="Date Ended" />
+
+              <TextInput
+                id="date_ended"
+                type="date"
+                name="date_ended"
+                value={data.date_ended}
+                className="mt-1 block w-full text-white"
+                onChange={(e) => setData("date_ended", e.target.value)}
+                style={{ colorScheme: "dark" }}
+              />
+
+              <InputError message={errors.date_ended} className="mt-2" />
+            </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="progress_status" value="Progress Status" />
+
+              <SelectInput
+                id="progress_status"
+                name="progress_status"
+                value={data.progress_status}
+                className="mt-1 block w-full"
+                onChange={(e) => setData("progress_status", e.target.value)}
+              >
+                <option value="pending">Pending</option>
+                <option value="ongoing">Ongoing</option>
+                <option value="completed">Completed</option>
+              </SelectInput>
+
+              <InputError message={errors.progress_status} className="mt-2" />
+            </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="client_id" value="Client" />
+
+              <SelectInput
+                id="client_id"
+                name="client_id"
+                value={data.client_id}
+                className="mt-1 block w-full"
+                onChange={(e) => setData("client_id", e.target.value)}
+              >
+                <option value={other_service.client_id}>
+                  {other_service.client
+                    ? other_service.client.name
+                    : "Select Client"}
+                </option>
+                {clients.data.map((client) => (
+                  <option key={client.id} value={client.id}>
+                    {client.name}
                   </option>
-                </SelectInput>
+                ))}
+              </SelectInput>
 
-                <InputError message={errors.case_type} className="mt-2" />
-              </div>
-              <div className="mt-4">
-                <InputLabel htmlFor="case_status" value="Case Status" />
+              <InputError message={errors.client_id} className="mt-2" />
+            </div>
+            <div className="mt-4">
+              <InputLabel htmlFor="created_by" value="Created By" />
 
-                <SelectInput
-                  id="case_status"
-                  name="case_status"
-                  value={data.case_status}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("case_status", e.target.value)}
-                >
-                  <option value="pending">Pending</option>
-                  <option value="ongoing">Ongoing</option>
-                  <option value="closed">Closed</option>
-                  <option value="decided">Decided</option>
-                  <option value="dismissed">Dismissed</option>
-                  <option value="appealed">Appealed</option>
-                  <option value="remanded">Remanded</option>
-                  <option value="settled">Settled</option>
-                  <option value="withdrawn">Withdrawn</option>
-                </SelectInput>
-
-                <InputError message={errors.case_status} className="mt-2" />
-              </div>
-              <div className="mt-4">
-                <InputLabel htmlFor="court_name" value="Court Name" />
-
-                <TextInput
-                  id="court_name"
-                  type="text"
-                  name="court_name"
-                  value={data.court_name}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("court_name", e.target.value)}
-                />
-
-                <InputError message={errors.court_name} className="mt-2" />
-              </div>
-              <div className="mt-4">
-                <InputLabel htmlFor="client_id" value="Client" />
-
-                <SelectInput
-                  id="client_id"
-                  name="client_id"
-                  value={data.client_id}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("client_id", e.target.value)}
-                >
-                  <option value={lawsuit.client_id}>
-                    {lawsuit.client ? lawsuit.client.name : "Select Client"}
+              <SelectInput
+                id="created_by"
+                name="created_by"
+                value={data.created_by}
+                className="mt-1 block w-full"
+                onChange={(e) => setData("created_by", e.target.value)}
+              >
+                <option value={other_service.created_by}>
+                  {other_service.created_by
+                    ? other_service.created_by.name
+                    : "Select User"}
+                </option>
+                {users.data.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name}
                   </option>
-                  {clients.data.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.name}
-                    </option>
-                  ))}
-                </SelectInput>
+                ))}
+              </SelectInput>
 
-                <InputError message={errors.client_id} className="mt-2" />
-              </div>
-              <div className="mt-4">
-                <InputLabel htmlFor="lawyer_id" value="Lawyer" />
-
-                <SelectInput
-                  id="lawyer_id"
-                  name="lawyer_id"
-                  value={data.lawyer_id}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("lawyer_id", e.target.value)}
-                >
-                  <option value={lawsuit.lawyer_id}>
-                    {lawsuit.lawyer ? lawsuit.lawyer.name : "Select Lawyer"}
-                  </option>
-                  {lawyers.data.map((lawyer) => (
-                    <option key={lawyer.id} value={lawyer.id}>
-                      {lawyer.name}
-                    </option>
-                  ))}
-                </SelectInput>
-
-                <InputError message={errors.lawyer_id} className="mt-2" />
-              </div>
-              <div className="mt-4">
-                <InputLabel htmlFor="open_date" value="Open Date" />
-
-                <TextInput
-                  id="open_date"
-                  type="date"
-                  name="open_date"
-                  value={data.open_date}
-                  className="mt-1 block w-full text-white"
-                  onChange={(e) => setData("open_date", e.target.value)}
-                  style={{ colorScheme: "dark" }}
-                />
-
-                <InputError message={errors.open_date} className="mt-2" />
-              </div>
-              <div className="mt-4 text-right">
-                <Link
-                  href={route("lawsuits.index")}
-                  className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
-                >
-                  Cancel
-                </Link>
-                <button className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600">
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
+              <InputError message={errors.created_by} className="mt-2" />
+            </div>
+            <div className="mt-4 text-right">
+              <Link
+                href={route("other-legal-services.index")}
+                className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
+              >
+                Cancel
+              </Link>
+              <button className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600">
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </AuthenticatedLayout>

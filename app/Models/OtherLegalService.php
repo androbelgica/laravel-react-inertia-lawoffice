@@ -9,6 +9,19 @@ class OtherLegalService extends Model
 {
     /** @use HasFactory<\Database\Factories\OtherLegalServiceFactory> */
     use HasFactory;
+    protected $fillable = [
+        'client_id',
+        'service_name',
+        'description',
+        'date_started',
+        'date_ended',
+        'progress_status',
+        'created_by',
+        'updated_by',
+
+    ];
+
+
 
     public function otherLegalServiceTasks()
     {

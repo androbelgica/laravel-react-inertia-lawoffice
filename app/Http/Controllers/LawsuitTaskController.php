@@ -59,6 +59,7 @@ class LawsuitTaskController extends Controller
         return inertia('LawsuitTask/Create', [
             'lawsuits' => Lawsuit::orderBy('title', 'asc')->get(),
             'users' => User::orderBy('name', 'asc')->get(),
+            'lawsuit_id' => request('lawsuit_id'), // Pass lawsuit_id to the view
         ]);
     }
 

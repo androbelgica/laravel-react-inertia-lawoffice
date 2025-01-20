@@ -3,7 +3,13 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import TasksTable from "../LawsuitTask/TasksTable";
 
-export default function Show({ auth, success, lawsuit, lawsuit_tasks, queryParams }) {
+export default function Show({
+  auth,
+  success,
+  lawsuit,
+  lawsuit_tasks,
+  queryParams,
+}) {
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -84,19 +90,29 @@ export default function Show({ auth, success, lawsuit, lawsuit_tasks, queryParam
                 </div>
                 <div className="mt-8">
                   <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded">
-                    <label className="font-bold text-lg">Other Information</label>
+                    <label className="font-bold text-lg">
+                      Other Information
+                    </label>
                     <div className="mt-4">
-                      <label className="font-bold text-md text-gray-700 dark:text-gray-300">Created At</label>
-                      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{lawsuit.created_at}</p>
+                      <label className="font-bold text-md text-gray-700 dark:text-gray-300">
+                        Created At
+                      </label>
+                      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        {lawsuit.created_at}
+                      </p>
                     </div>
                     <div className="mt-4">
-                      <label className="font-bold text-md text-gray-700 dark:text-gray-300">Created By</label>
+                      <label className="font-bold text-md text-gray-700 dark:text-gray-300">
+                        Created By
+                      </label>
                       <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         {lawsuit.created_by ? lawsuit.created_by.name : "N/A"}
                       </p>
                     </div>
                     <div className="mt-4">
-                      <label className="font-bold text-md text-gray-700 dark:text-gray-300">Updated By</label>
+                      <label className="font-bold text-md text-gray-700 dark:text-gray-300">
+                        Updated By
+                      </label>
                       <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         {lawsuit.updated_by ? lawsuit.updated_by.name : "N/A"}
                       </p>
@@ -109,10 +125,20 @@ export default function Show({ auth, success, lawsuit, lawsuit_tasks, queryParam
         </div>
       </div>
 
-        <div className="pb-12">
+      <div className="pb-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div className="p-6 text-gray-900 dark:text-gray-100">
+              <div className="flex justify-end mb-4">
+                <Link
+                  href={route("lawsuit-tasks.create", {
+                    lawsuit_id: lawsuit.id,
+                  })}
+                  className="bg-green-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-green-600"
+                >
+                  Add New Task
+                </Link>
+              </div>
               <TasksTable
                 lawsuit_tasks={lawsuit_tasks}
                 success={success}

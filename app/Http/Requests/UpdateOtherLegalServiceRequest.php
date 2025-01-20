@@ -11,7 +11,7 @@ class UpdateOtherLegalServiceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,12 @@ class UpdateOtherLegalServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'service_name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'date_started' => 'required|date',
+            'date_ended' => 'nullable|date',
+            'progress_status' => 'required|string|max:255',
+            'client_id' => 'required|exists:clients,id',
         ];
     }
 }

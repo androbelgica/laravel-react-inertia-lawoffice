@@ -210,7 +210,7 @@ export default function Index({
                       >
                         <option value="">Select Status</option>
                         <option value="pending">Pending</option>
-                        <option value="in_progress">In Progress</option>
+                        <option value="ongoing">Ongoing</option>
                         <option value="completed">Completed</option>
                       </SelectInput>
                     </th>
@@ -231,6 +231,13 @@ export default function Index({
                     >
                       <td className="px-3 py-2">{service.id}</td>
                       <td className="px-3 py-2">{service.service_name}</td>
+                      <th className="px-3 py-2 text-gray-100 hover:underline">
+                        <Link
+                          href={route("other-legal-services.show", service.id)}
+                        >
+                          {service.service_name}
+                        </Link>
+                      </th>
                       <td className="px-3 py-2">{service.progress_status}</td>
                       <td className="px-3 py-2">{service.date_started}</td>
                       <td className="px-3 py-2">{service.date_ended}</td>

@@ -8,6 +8,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class OtherLegalServiceResource extends JsonResource
 {
+    public static $wrap = false;
+
     /**
      * Transform the resource into an array.
      *
@@ -19,9 +21,10 @@ class OtherLegalServiceResource extends JsonResource
             'id' => $this->id,
             'service_name' => $this->service_name,
             'description' => $this->description,
-            'progress_status' => $this->progress_status,
             'date_started' => (new Carbon($this->date_started))->format('Y-m-d'),
             'date_ended' => (new Carbon($this->date_ended))->format('Y-m-d'),
+            'progress_status' => $this->progress_status,
+            'client_id' => $this->client_id,
             'client' => new ClientResource($this->client),
             'created_by' => new UserResource($this->createdBy),
             'updated_by' => new UserResource($this->updatedBy),

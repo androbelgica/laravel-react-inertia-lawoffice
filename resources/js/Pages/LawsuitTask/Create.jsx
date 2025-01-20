@@ -6,7 +6,12 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
-export default function Create({ auth, users = [], lawsuits = [] }) {
+export default function Create({
+  auth,
+  users = [],
+  lawsuits = [],
+  lawsuit_id = "",
+}) {
   const { data, setData, post, errors, reset } = useForm({
     task_name: "",
     description: "",
@@ -14,8 +19,13 @@ export default function Create({ auth, users = [], lawsuits = [] }) {
     status: "pending", // Use lowercase value
     due_date: "",
     user_id: "",
-    lawsuit_id: "",
+    lawsuit_id: lawsuit_id, // Set initial value from prop
   });
+
+  // Find the lawsuit by lawsuit_id
+  const selectedLawsuit = lawsuits.find(
+    (lawsuit) => lawsuit.id === parseInt(lawsuit_id)
+  );
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -156,6 +166,7 @@ export default function Create({ auth, users = [], lawsuits = [] }) {
                   value={data.lawsuit_id}
                   className="mt-1 block w-full"
                   onChange={(e) => setData("lawsuit_id", e.target.value)}
+                  disabled={!!lawsuit_id} // Disable if lawsuit_id is passed
                 >
                   <option value="">Select Lawsuit</option>
                   {sortedLawsuits.map((lawsuit) => (
@@ -167,6 +178,12 @@ export default function Create({ auth, users = [], lawsuits = [] }) {
 
                 <InputError message={errors.lawsuit_id} className="mt-2" />
               </div>
+              {selectedLawsuit && (
+                <div className="mt-4">
+                  <InputLabel value="Lawsuit Title" />
+                  <p className="mt-1">{selectedLawsuit.title}</p>
+                </div>
+              )}
               <div className="mt-4 text-right">
                 <Link
                   href={route("lawsuit-tasks.index")}

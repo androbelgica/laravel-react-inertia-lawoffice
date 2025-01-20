@@ -121,7 +121,7 @@ export default function TasksTable({
                 sort_direction={queryParams.sort_direction}
                 sortChanged={sortChanged}
               >
-                Lawsuit
+                Case Number
               </TableHeading>
               <TableHeading
                 name="user_id" // Change assigned_to to user_id
@@ -193,7 +193,7 @@ export default function TasksTable({
                 <TextInput
                   className="w-full"
                   defaultValue={queryParams.lawsuit}
-                  placeholder="Lawsuit"
+                  placeholder="Case Number"
                   onBlur={(e) => searchFieldChanged("lawsuit", e.target.value)}
                   onKeyPress={(e) => onKeyPress("lawsuit", e)}
                 />

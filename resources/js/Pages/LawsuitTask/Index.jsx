@@ -16,7 +16,7 @@ export default function Index({
       header={
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-            Lawsuit Tasks
+            Litigation Tasks
           </h2>
           <Link
             href={route("lawsuit-tasks.create")}
