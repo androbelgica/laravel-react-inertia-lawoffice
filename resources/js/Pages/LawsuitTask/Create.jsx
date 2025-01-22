@@ -11,6 +11,7 @@ export default function Create({
   users = [],
   lawsuits = [],
   lawsuit_id = "",
+  origin = "lawsuit-tasks.index", // Add origin prop
 }) {
   const { data, setData, post, errors, reset } = useForm({
     task_name: "",
@@ -20,6 +21,7 @@ export default function Create({
     due_date: "",
     user_id: "",
     lawsuit_id: lawsuit_id, // Set initial value from prop
+    origin: origin, // Set initial value from prop
   });
 
   // Find the lawsuit by lawsuit_id
@@ -30,7 +32,10 @@ export default function Create({
   const onSubmit = (e) => {
     e.preventDefault();
 
-    post(route("lawsuit-tasks.store"));
+    post(route("lawsuit-tasks.store"), {
+      preserveScroll: true,
+      onSuccess: () => reset(),
+    });
   };
 
   // Sort users and lawsuits alphabetically by name/title
@@ -45,7 +50,7 @@ export default function Create({
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Create new Lawsuit Task
+            Create new Litigation Task
           </h2>
         </div>
       }

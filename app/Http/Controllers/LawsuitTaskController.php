@@ -72,7 +72,13 @@ class LawsuitTaskController extends Controller
         $data['created_by'] = Auth::id();
         $data['updated_by'] = Auth::id();
 
-        LawsuitTask::create($data);
+        $lawsuitTask = LawsuitTask::create($data);
+
+        $origin = $request->input('origin', 'lawsuit-tasks.index');
+
+        if ($origin === 'lawsuits.show') {
+            return to_route('lawsuits.show', $lawsuitTask->lawsuit_id)->with('success', 'Lawsuit Task created successfully.');
+        }
 
         return to_route('lawsuit-tasks.index')->with('success', 'Lawsuit Task created successfully.');
     }
