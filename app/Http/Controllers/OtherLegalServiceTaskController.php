@@ -53,7 +53,7 @@ class OtherLegalServiceTaskController extends Controller
     public function create()
     {
         return inertia('OtherLegalServicesTask/Create', [
-            'other_legal_services' => OtherLegalService::orderBy('title', 'asc')->get(),
+            'other_legal_services' => OtherLegalService::orderBy('service_name', 'asc')->get(),
             'users' => User::orderBy('name', 'asc')->get(),
             'other_legal_service_id' => request('other_legal_service_id'), // Pass other_legal_service_id to the view
         ]);

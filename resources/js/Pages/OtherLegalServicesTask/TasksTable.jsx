@@ -220,7 +220,8 @@ export default function TasksTable({
                 {!hideProjectColumn && (
                   <td className="px-3 py-2">
                     {other_legal_service_task.other_legal_service
-                      ? other_legal_service_task.other_legal_service.case_number
+                      ? other_legal_service_task.other_legal_service
+                          .service_name
                       : "N/A"}
                   </td>
                 )}

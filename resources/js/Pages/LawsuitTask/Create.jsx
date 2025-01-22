@@ -45,7 +45,9 @@ export default function Create({
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Create new Lawsuit Task
+            {`Create new Task for ${
+              selectedLawsuit ? selectedLawsuit.case_number : "Litigation Case"
+            }`}
           </h2>
         </div>
       }

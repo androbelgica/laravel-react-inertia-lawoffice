@@ -33,11 +33,15 @@ export default function Create({
     post(route("other-legal-service-tasks.store"));
   };
 
-  // Sort users and other legal services alphabetically by name/title
-  const sortedUsers = users.sort((a, b) => a.name.localeCompare(b.name));
-  const sortedOtherLegalServices = other_legal_services.sort((a, b) =>
-    a.title.localeCompare(b.title)
-  );
+  // Sort users and other legal services alphabetically by name/service_name
+  const sortedUsers = users
+    ? users.sort((a, b) => (a.name || "").localeCompare(b.name || ""))
+    : [];
+  const sortedOtherLegalServices = other_legal_services
+    ? other_legal_services.sort((a, b) =>
+        (a.service_name || "").localeCompare(b.service_name || "")
+      )
+    : [];
 
   return (
     <AuthenticatedLayout
@@ -45,12 +49,16 @@ export default function Create({
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Create new Other Legal Service Task
+            {`Create new Task for ${
+              selectedOtherLegalService
+                ? selectedOtherLegalService.service_name
+                : "Other Legal Service"
+            }`}
           </h2>
         </div>
       }
     >
-      <Head title="Other Legal Service Tasks" />
+      <Head service_name="Other Legal Service Tasks" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -157,10 +165,13 @@ export default function Create({
 
                 <InputError message={errors.user_id} className="mt-2" />
               </div>
-              <div className="mt-4">
+              <div
+                className="mt-4"
+                style={{ display: other_legal_service_id ? "none" : "block" }}
+              >
                 <InputLabel
                   htmlFor="other_legal_service_id"
-                  value="Other Legal Service"
+                  value="Other Legal Service Name"
                 />
 
                 <SelectInput
@@ -176,7 +187,7 @@ export default function Create({
                   <option value="">Select Other Legal Service</option>
                   {sortedOtherLegalServices.map((service) => (
                     <option key={service.id} value={service.id}>
-                      {service.title}
+                      {service.service_name}
                     </option>
                   ))}
                 </SelectInput>
@@ -188,8 +199,10 @@ export default function Create({
               </div>
               {selectedOtherLegalService && (
                 <div className="mt-4">
-                  <InputLabel value="Other Legal Service Title" />
-                  <p className="mt-1">{selectedOtherLegalService.title}</p>
+                  <InputLabel value="Other Legal Service Name" />
+                  <p className="mt-1">
+                    {selectedOtherLegalService.service_name}
+                  </p>
                 </div>
               )}
               <div className="mt-4 text-right">

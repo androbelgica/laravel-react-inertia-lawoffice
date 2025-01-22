@@ -6,7 +6,7 @@ export default function Show({
   auth,
   success,
   other_service,
-  other_service_tasks,
+  other_legal_service_tasks,
   queryParams,
 }) {
   return (
@@ -114,7 +114,7 @@ export default function Show({
               <div className="flex justify-end mb-4">
                 <Link
                   href={route("other-legal-service-tasks.create", {
-                    other_service_id: other_service.id,
+                    other_legal_service_id: other_service.id,
                   })}
                   className="bg-green-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-green-600"
                 >
@@ -122,7 +122,9 @@ export default function Show({
                 </Link>
               </div>
               <TasksTable
-                other_legal_service_tasks={other_service_tasks}
+                other_legal_service_tasks={
+                  other_service.other_legal_service_tasks
+                }
                 success={success}
                 queryParams={queryParams}
                 hideProjectColumn={true}
