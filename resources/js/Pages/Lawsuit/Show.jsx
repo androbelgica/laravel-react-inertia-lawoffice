@@ -133,6 +133,7 @@ export default function Show({
                 <Link
                   href={route("lawsuit-tasks.create", {
                     lawsuit_id: lawsuit.id,
+                    origin: "lawsuits.show", // Add origin parameter
                   })}
                   className="bg-green-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-green-600"
                 >
