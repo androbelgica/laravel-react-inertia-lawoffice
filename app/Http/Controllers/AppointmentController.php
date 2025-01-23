@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use App\Http\Resources\AppointmentResource;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
@@ -13,7 +15,24 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        //
+        $query = Appointment::query();
+
+        $sortFields = request("sort_field", "created_at");
+        $sortDirections = request("sort_direction", "desc");
+
+        if (request('title')) {
+            $query->where('title', 'like', '%' . request('title') . '%');
+        }
+
+        $appointments = $query->orderBy($sortFields, $sortDirections)
+            ->paginate(10)
+            ->onEachSide(1);
+
+        return inertia('Appointments/Index', [
+            "appointments" => AppointmentResource::collection($appointments),
+            'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
+        ]);
     }
 
     /**
@@ -21,7 +40,7 @@ class AppointmentController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Appointments/Create');
     }
 
     /**
@@ -29,7 +48,12 @@ class AppointmentController extends Controller
      */
     public function store(StoreAppointmentRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['created_by'] = Auth::id();
+        $data['updated_by'] = Auth::id();
+        Appointment::create($data);
+
+        return to_route('appointments.index')->with('success', 'Appointment was added successfully');
     }
 
     /**
@@ -37,7 +61,7 @@ class AppointmentController extends Controller
      */
     public function show(Appointment $appointment)
     {
-        //
+        // ...
     }
 
     /**
@@ -45,7 +69,9 @@ class AppointmentController extends Controller
      */
     public function edit(Appointment $appointment)
     {
-        //
+        return inertia('Appointments/Edit', [
+            'appointment' => new AppointmentResource($appointment),
+        ]);
     }
 
     /**
@@ -53,7 +79,13 @@ class AppointmentController extends Controller
      */
     public function update(UpdateAppointmentRequest $request, Appointment $appointment)
     {
-        //
+        $data = $request->validated();
+        $data['updated_by'] = Auth::id();
+
+        $appointment->update($data);
+
+        return to_route('appointments.index')
+            ->with('success', "Appointment \"$appointment->title\" was updated");
     }
 
     /**
@@ -61,6 +93,11 @@ class AppointmentController extends Controller
      */
     public function destroy(Appointment $appointment)
     {
-        //
+        $title = $appointment->title;
+        $appointment->delete();
+        return to_route('appointments.index')->with(
+            'success',
+            "Appointment \"$title\" was deleted successfully"
+        );
     }
 }

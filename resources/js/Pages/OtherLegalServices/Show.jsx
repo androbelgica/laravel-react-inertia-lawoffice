@@ -122,9 +122,7 @@ export default function Show({
                 </Link>
               </div>
               <TasksTable
-                other_legal_service_tasks={
-                  other_service.other_legal_service_tasks
-                }
+                other_legal_service_tasks={other_legal_service_tasks} // Correct prop
                 success={success}
                 queryParams={queryParams}
                 hideProjectColumn={true}

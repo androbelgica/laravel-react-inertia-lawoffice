@@ -9,6 +9,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\LawsuitTaskController;
 use App\Http\Controllers\OtherLegalServiceTaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SchedulerController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,5 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/lawsuit-tasks', [SchedulerController::class, 'fetchLawsuitTasks'])->name('scheduler.fetchLawsuitTasks');
+Route::get('/other-legal-service-tasks', [SchedulerController::class, 'fetchOtherLegalServiceTasks'])->name('scheduler.fetchOtherLegalServiceTasks');
 
 require __DIR__ . '/auth.php';

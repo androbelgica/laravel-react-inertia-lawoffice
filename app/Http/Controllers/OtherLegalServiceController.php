@@ -10,6 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Requests\StoreOtherLegalServiceRequest;
 use App\Http\Requests\UpdateOtherLegalServiceRequest;
 use App\Http\Resources\OtherLegalServiceResource;
+use App\Http\Resources\OtherLegalServiceTaskResource;
 use Illuminate\Support\Facades\Auth;
 
 class OtherLegalServiceController extends Controller
@@ -73,8 +74,32 @@ class OtherLegalServiceController extends Controller
      */
     public function show(OtherLegalService $otherLegalService)
     {
+        $query = $otherLegalService->tasks();
+
+        $sortFields = request("sort_field", "created_at");
+        $sortDirections = request("sort_direction", "desc");
+
+        if (request('task_name')) {
+            $query->where('task_name', 'like', '%' . request('task_name') . '%');
+        }
+
+        if (request('priority')) {
+            $query->where('priority', 'like', '%' . request('priority') . '%');
+        }
+
+        if (request('status')) {
+            $query->where('status', 'like', '%' . request('status') . '%');
+        }
+
+        $other_legal_service_tasks = $query->orderBy($sortFields, $sortDirections)
+            ->paginate(10)
+            ->onEachSide(1);
+
         return inertia('OtherLegalServices/Show', [
+            'success' => session('success'),
             'other_service' => new OtherLegalServiceResource($otherLegalService),
+            'other_legal_service_tasks' => OtherLegalServiceTaskResource::collection($other_legal_service_tasks),
+            'queryParams' => request()->query() ?: null,
         ]);
     }
 

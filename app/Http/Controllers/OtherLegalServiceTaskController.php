@@ -11,6 +11,7 @@ use App\Http\Resources\OtherLegalServiceResource;
 use App\Http\Requests\StoreOtherLegalServiceTaskRequest;
 use App\Http\Requests\UpdateOtherLegalServiceTaskRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class OtherLegalServiceTaskController extends Controller
 {
@@ -144,5 +145,14 @@ class OtherLegalServiceTaskController extends Controller
             'success',
             "Other Legal Service Task \"$title\" was deleted successfully"
         );
+    }
+
+    /**
+     * Fetch all other legal service tasks.
+     */
+    public function fetchAll()
+    {
+        $tasks = OtherLegalServiceTask::all();
+        return OtherLegalServiceTaskResource::collection($tasks);
     }
 }

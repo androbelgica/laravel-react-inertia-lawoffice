@@ -11,6 +11,7 @@ use App\Http\Resources\LawsuitResource;
 use App\Http\Requests\StoreLawsuitTaskRequest;
 use App\Http\Requests\UpdateLawsuitTaskRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class LawsuitTaskController extends Controller
 {

@@ -210,7 +210,6 @@ export default function TasksTable({
             </tr>
           </thead>
           <tbody>
-            {/* <pre>{JSON.stringify(other_legal_service_tasks,undefined, 2)}</pre>  */}
             {other_legal_service_tasks.data.map((other_legal_service_task) => (
               <tr
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
