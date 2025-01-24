@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -17,7 +17,7 @@ const Scheduler = ({ lawsuit_tasks = [], other_legal_service_tasks = [] }) => {
   };
 
   const events = [
-    ...lawsuit_tasks.data.map((task) => ({
+    ...lawsuit_tasks.map((task) => ({
       id: task.id,
       title: task.task_name,
       start: task.created_at,
@@ -30,7 +30,7 @@ const Scheduler = ({ lawsuit_tasks = [], other_legal_service_tasks = [] }) => {
         type: "lawsuit",
       },
     })),
-    ...other_legal_service_tasks.data.map((task) => ({
+    ...other_legal_service_tasks.map((task) => ({
       id: task.id,
       title: task.task_name,
       start: task.created_at,
@@ -44,6 +44,12 @@ const Scheduler = ({ lawsuit_tasks = [], other_legal_service_tasks = [] }) => {
       },
     })),
   ];
+
+  useEffect(() => {
+    const calendarApi = calendarRef.current.getApi();
+    calendarApi.removeAllEvents();
+    calendarApi.addEventSource(events);
+  }, [lawsuit_tasks, other_legal_service_tasks]);
 
   const handleEventClick = (info) => {
     const { id, extendedProps } = info.event;
@@ -62,7 +68,6 @@ const Scheduler = ({ lawsuit_tasks = [], other_legal_service_tasks = [] }) => {
         ref={calendarRef}
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
-        events={events}
         selectable={false}
         editable={false}
         eventClick={handleEventClick}

@@ -21,8 +21,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $lawsuitTasks = App\Models\LawsuitTask::all();
         $otherLegalServiceTasks = App\Models\OtherLegalServiceTask::all();
         return Inertia::render('Dashboard', [
-            'lawsuit_tasks' => LawsuitTaskResource::collection($lawsuitTasks),
-            'other_legal_service_tasks' => OtherLegalServiceTaskResource::collection($otherLegalServiceTasks),
+            'lawsuit_tasks' => LawsuitTaskResource::collection($lawsuitTasks)->resolve(),
+            'other_legal_service_tasks' => OtherLegalServiceTaskResource::collection($otherLegalServiceTasks)->resolve(),
         ]);
     })->name('dashboard');
 

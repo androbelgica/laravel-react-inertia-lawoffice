@@ -67,7 +67,9 @@ export default function TasksTable({
               >
                 ID
               </TableHeading>
-              {!hideProjectColumn && <th className="px-3 py-3">Case Number</th>}
+              {!hideProjectColumn && (
+                <th className="px-3 py-3">Service Name</th>
+              )}
               <TableHeading
                 name="task_name"
                 sortable={true}
@@ -113,15 +115,6 @@ export default function TasksTable({
                 sortChanged={sortChanged}
               >
                 Due Date
-              </TableHeading>
-              <TableHeading
-                name="other_legal_service_id"
-                sortable={true}
-                sort_field={queryParams.sort_field}
-                sort_direction={queryParams.sort_direction}
-                sortChanged={sortChanged}
-              >
-                Case Number
               </TableHeading>
               <TableHeading
                 name="user_id"
@@ -189,22 +182,9 @@ export default function TasksTable({
               </th>
               <th className="px-3 py-3"> </th>
 
-              <th className="px-3 py-3">
-                <TextInput
-                  className="w-full"
-                  defaultValue={queryParams.other_legal_service}
-                  placeholder="Case Number"
-                  onBlur={(e) =>
-                    searchFieldChanged("other_legal_service", e.target.value)
-                  }
-                  onKeyPress={(e) => onKeyPress("other_legal_service", e)}
-                />
-              </th>
               <th className="px-3 py-3"> </th>
 
               <th className="px-3 py-3"> </th>
-
-              <th className="px-3 py-3"></th>
 
               <th className="px-3 py-3 text-right"></th>
             </tr>
@@ -251,11 +231,6 @@ export default function TasksTable({
                 </td>
                 <td className="px-3 py-2">
                   {other_legal_service_task.due_date}
-                </td>
-                <td className="px-3 py-2">
-                  {other_legal_service_task.other_legal_service
-                    ? other_legal_service_task.other_legal_service.case_number
-                    : "N/A"}
                 </td>
                 <td className="px-3 py-2">
                   {other_legal_service_task.user
