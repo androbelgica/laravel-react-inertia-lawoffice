@@ -9,16 +9,22 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\LawsuitTaskController;
 use App\Http\Controllers\OtherLegalServiceTaskController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\SchedulerController;
-use Illuminate\Foundation\Application;
+use App\Http\Resources\LawsuitTaskResource;
+use App\Http\Resources\OtherLegalServiceTaskResource;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))
-        ->name('dashboard');
+    Route::get('/dashboard', function () {
+        $lawsuitTasks = App\Models\LawsuitTask::all();
+        $otherLegalServiceTasks = App\Models\OtherLegalServiceTask::all();
+        return Inertia::render('Dashboard', [
+            'lawsuit_tasks' => LawsuitTaskResource::collection($lawsuitTasks),
+            'other_legal_service_tasks' => OtherLegalServiceTaskResource::collection($otherLegalServiceTasks),
+        ]);
+    })->name('dashboard');
 
     Route::resource('clients', ClientController::class);
     Route::resource('lawyers', LawyerController::class);
@@ -28,6 +34,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('lawsuit-tasks', LawsuitTaskController::class);
     Route::resource('other-legal-service-tasks', OtherLegalServiceTaskController::class);
     Route::resource('users', UserController::class);
+
+    Route::get('/lawsuit-tasks/fetchAll', [LawsuitTaskController::class, 'fetchAll']);
+    Route::get('/other-legal-service-tasks/fetchAll', [OtherLegalServiceTaskController::class, 'fetchAll']);
 });
 
 Route::middleware('auth')->group(function () {
@@ -35,9 +44,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-// Update the routes to avoid conflicts
-Route::get('/scheduler/lawsuit-tasks', [SchedulerController::class, 'fetchLawsuitTasks'])->name('scheduler.fetchLawsuitTasks');
-Route::get('/scheduler/other-legal-service-tasks', [SchedulerController::class, 'fetchOtherLegalServiceTasks'])->name('scheduler.fetchOtherLegalServiceTasks');
 
 require __DIR__ . '/auth.php';

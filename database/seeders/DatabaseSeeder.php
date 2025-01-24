@@ -30,52 +30,52 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        Client::factory(10)
-            ->hasLawsuits(5)
-            ->hasOtherLegalServices(5)
-            ->create([
-                'created_by' => User::first()->id,
-                'updated_by' => User::first()->id,
-            ]);
+        // Client::factory(10)
+        //     ->hasLawsuits(5)
+        //     ->hasOtherLegalServices(5)
+        //     ->create([
+        //         'created_by' => User::first()->id,
+        //         'updated_by' => User::first()->id,
+        //     ]);
 
-        Lawyer::factory(10)
-            ->hasLawsuits(5)
-            ->hasAppointments(5)
-            ->create([
-                'created_by' => User::first()->id,
-                'updated_by' => User::first()->id,
-            ]);
+        // Lawyer::factory(10)
+        //     ->hasLawsuits(5)
+        //     ->hasAppointments(5)
+        //     ->create([
+        //         'created_by' => User::first()->id,
+        //         'updated_by' => User::first()->id,
+        //     ]);
 
-        Lawsuit::factory(5)
-            ->hasLawsuitTasks(5)
-            ->create([
-                'created_by' => User::first()->id,
-                'updated_by' => User::first()->id,
-            ]);
+        // Lawsuit::factory(5)
+        //     ->hasLawsuitTasks(5)
+        //     ->create([
+        //         'created_by' => User::first()->id,
+        //         'updated_by' => User::first()->id,
+        //     ]);
 
-        OtherLegalService::factory(5)
-            ->hasOtherLegalServiceTasks(5)
-            ->create([
-                'created_by' => User::first()->id,
-                'updated_by' => User::first()->id,
-            ]);
+        // OtherLegalService::factory(5)
+        //     ->hasOtherLegalServiceTasks(5)
+        //     ->create([
+        //         'created_by' => User::first()->id,
+        //         'updated_by' => User::first()->id,
+        //     ]);
 
-        Appointment::factory(5)
-            ->create([
-                'created_by' => User::first()->id,
-                'updated_by' => User::first()->id,
-            ]);
+        // Appointment::factory(5)
+        //     ->create([
+        //         'created_by' => User::first()->id,
+        //         'updated_by' => User::first()->id,
+        //     ]);
 
-        LawsuitTask::factory(5)
-            ->create([
-                'created_by' => User::first()->id,
-                'updated_by' => User::first()->id,
-            ]);
+        // LawsuitTask::factory(5)
+        //     ->create([
+        //         'created_by' => User::first()->id,
+        //         'updated_by' => User::first()->id,
+        //     ]);
 
-        OtherLegalServiceTask::factory(5)
-            ->create([
-                'created_by' => User::first()->id,
-                'updated_by' => User::first()->id,
-            ]);
+        // OtherLegalServiceTask::factory(5)
+        //     ->create([
+        //         'created_by' => User::first()->id,
+        //         'updated_by' => User::first()->id,
+        //     ]);
     }
 }

@@ -151,4 +151,13 @@ class LawsuitTaskController extends Controller
             "Lawsuit Task \"$title\" was deleted successfully"
         );
     }
+
+    /**
+     * Fetch all lawsuit tasks.
+     */
+    public function fetchAll()
+    {
+        $tasks = LawsuitTask::all();
+        return LawsuitTaskResource::collection($tasks);
+    }
 }

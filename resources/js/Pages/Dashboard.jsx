@@ -1,8 +1,11 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import SchedulerPage from "./Scheduler"; // Import the Scheduler component
+import Scheduler from "./Scheduler";
 
-export default function Dashboard() {
+export default function Dashboard({
+  lawsuit_tasks,
+  other_legal_service_tasks,
+}) {
   return (
     <AuthenticatedLayout
       header={
@@ -20,8 +23,11 @@ export default function Dashboard() {
               You're logged in!
             </div>
           </div>
-          <div className="mt-8">
-            <SchedulerPage /> {/* Add the Scheduler component */}
+          <div className="mt-6">
+            <Scheduler
+              lawsuit_tasks={lawsuit_tasks}
+              other_legal_service_tasks={other_legal_service_tasks}
+            />
           </div>
         </div>
       </div>

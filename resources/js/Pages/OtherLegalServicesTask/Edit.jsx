@@ -135,7 +135,7 @@ export default function Edit({
                   className="mt-1 block w-full"
                   onChange={(e) => setData("user_id", e.target.value)}
                 >
-                  {users.map((user) => (
+                  {users.data.map((user) => (
                     <option key={user.id} value={user.id}>
                       {user.name}
                     </option>
@@ -159,7 +159,7 @@ export default function Edit({
                     setData("other_legal_service_id", e.target.value)
                   }
                 >
-                  {other_legal_services.map((service) => (
+                  {other_legal_services.data.map((service) => (
                     <option key={service.id} value={service.id}>
                       {service.title}
                     </option>
