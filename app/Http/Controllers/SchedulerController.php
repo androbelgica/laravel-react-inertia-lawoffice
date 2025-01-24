@@ -15,8 +15,12 @@ class SchedulerController extends Controller
      */
     public function fetchLawsuitTasks()
     {
-        $tasks = LawsuitTask::all();
-        return LawsuitTaskResource::collection($tasks);
+        $tasks = LawsuitTask::with('user:id,name')
+            ->select('id', 'task_name', 'due_date', 'created_at', 'user_id')
+            ->get();
+        return inertia('LawsuitTask/Index', [
+            'tasks' => LawsuitTaskResource::collection($tasks),
+        ]);
     }
 
     /**
@@ -24,7 +28,11 @@ class SchedulerController extends Controller
      */
     public function fetchOtherLegalServiceTasks()
     {
-        $tasks = OtherLegalServiceTask::all();
-        return OtherLegalServiceTaskResource::collection($tasks);
+        $tasks = OtherLegalServiceTask::with('user:id,name')
+            ->select('id', 'task_name', 'due_date', 'created_at', 'user_id')
+            ->get();
+        return inertia('OtherLegalServiceTask/Index', [
+            'tasks' => OtherLegalServiceTaskResource::collection($tasks),
+        ]);
     }
 }

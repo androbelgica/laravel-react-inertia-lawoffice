@@ -36,7 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/lawsuit-tasks', [SchedulerController::class, 'fetchLawsuitTasks'])->name('scheduler.fetchLawsuitTasks');
-Route::get('/other-legal-service-tasks', [SchedulerController::class, 'fetchOtherLegalServiceTasks'])->name('scheduler.fetchOtherLegalServiceTasks');
+// Update the routes to avoid conflicts
+Route::get('/scheduler/lawsuit-tasks', [SchedulerController::class, 'fetchLawsuitTasks'])->name('scheduler.fetchLawsuitTasks');
+Route::get('/scheduler/other-legal-service-tasks', [SchedulerController::class, 'fetchOtherLegalServiceTasks'])->name('scheduler.fetchOtherLegalServiceTasks');
 
 require __DIR__ . '/auth.php';

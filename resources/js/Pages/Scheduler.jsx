@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
 import { router } from "@inertiajs/react";
 
 const SchedulerPage = () => {
   const [events, setEvents] = useState([]);
-  const [date, setDate] = useState(new Date());
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -17,19 +16,21 @@ const SchedulerPage = () => {
           route("scheduler.fetchOtherLegalServiceTasks")
         );
 
-        const lawsuitTasks = lawsuitTasksResponse.data.map((task) => ({
+        const lawsuitTasks = lawsuitTasksResponse.props.tasks.map((task) => ({
           id: task.id,
-          date: new Date(task.due_date),
-          title: task.task_name,
-          bgColor: "purple",
+          title: `${task.task_name} (Assigned to: ${task.user_name})`,
+          start: task.created_at,
+          end: task.due_date,
+          backgroundColor: "purple",
         }));
 
-        const otherLegalServiceTasks = otherLegalServiceTasksResponse.data.map(
+        const otherLegalServiceTasks = otherLegalServiceTasksResponse.props.tasks.map(
           (task) => ({
             id: task.id,
-            date: new Date(task.due_date),
-            title: task.task_name,
-            bgColor: "blue",
+            title: `${task.task_name} (Assigned to: ${task.user_name})`,
+            start: task.created_at,
+            end: task.due_date,
+            backgroundColor: "blue",
           })
         );
 
@@ -42,30 +43,13 @@ const SchedulerPage = () => {
     fetchTasks();
   }, []);
 
-  const tileContent = ({ date, view }) => {
-    if (view === "month") {
-      const dayEvents = events.filter(
-        (event) => event.date.toDateString() === date.toDateString()
-      );
-      return dayEvents.map((event) => (
-        <div
-          key={event.id}
-          style={{
-            backgroundColor: event.bgColor,
-            color: "white",
-            padding: "2px",
-            borderRadius: "4px",
-          }}
-        >
-          {event.title}
-        </div>
-      ));
-    }
-  };
-
   return (
     <div>
-      <Calendar onChange={setDate} value={date} tileContent={tileContent} />
+      <FullCalendar
+        plugins={[dayGridPlugin]}
+        initialView="dayGridMonth"
+        events={events}
+      />
     </div>
   );
 };
