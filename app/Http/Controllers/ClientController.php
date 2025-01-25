@@ -7,6 +7,8 @@ use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Http\Resources\ClientResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ClientController extends Controller
 {
@@ -32,6 +34,7 @@ class ClientController extends Controller
             "clients" => ClientResource::collection($clients),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
+            'isException' => session('isException', false),
         ]);
     }
 
@@ -94,10 +97,17 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         $name = $client->name;
-        $client->delete();
-        return to_route('clients.index')->with(
-            'success',
-            "Client \"$name\" was deleted successfully"
-        );
+        try {
+            $client->delete();
+            return to_route('clients.index')->with(
+                'success',
+                "Client \"$name\" was deleted successfully"
+            );
+        } catch (QueryException $e) {
+            return to_route('clients.index')->with([
+                'success' => "Client \"$name\" cannot be deleted because it is referenced by other records.",
+                'isException' => true,
+            ]);
+        }
     }
 }

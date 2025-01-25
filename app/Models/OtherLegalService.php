@@ -47,4 +47,9 @@ class OtherLegalService extends Model
     {
         return $this->hasMany(OtherLegalServiceTask::class, 'other_legal_service_id');
     }
+
+    public function other_legal_service_tasks()
+    {
+        return $this->hasMany(OtherLegalServiceTask::class);
+    }
 }

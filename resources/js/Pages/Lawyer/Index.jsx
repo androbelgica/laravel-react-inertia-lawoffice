@@ -1,11 +1,17 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import Pagination from '@/Components/Pagination';
-import TextInput from '@/Components/TextInput';
-import TableHeading from '@/Components/TableHeading';
-import { Head, Link, router } from '@inertiajs/react';
-import React, { useEffect, useState } from 'react';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import Pagination from "@/Components/Pagination";
+import TextInput from "@/Components/TextInput";
+import TableHeading from "@/Components/TableHeading";
+import { Head, Link, router } from "@inertiajs/react";
+import React, { useEffect, useState } from "react";
 
-export default function Index({ auth, lawyers, queryParams = null , success}) {
+export default function Index({
+  auth,
+  lawyers,
+  queryParams = null,
+  success,
+  isException,
+}) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -13,48 +19,55 @@ export default function Index({ auth, lawyers, queryParams = null , success}) {
     } else {
       delete queryParams[name];
     }
-    router.get(route('lawyers.index'), queryParams);
+    router.get(route("lawyers.index"), queryParams);
   };
 
   const onKeyPress = (name, e) => {
-    if (e.key !== 'Enter') return;
+    if (e.key !== "Enter") return;
     searchFieldChanged(name, e.target.value);
   };
 
   const sortChanged = (name) => {
     if (name === queryParams.sort_field) {
-      if (queryParams.sort_direction === 'asc') {
-        queryParams.sort_direction = 'desc';
+      if (queryParams.sort_direction === "asc") {
+        queryParams.sort_direction = "desc";
       } else {
-        queryParams.sort_direction = 'asc';
+        queryParams.sort_direction = "asc";
       }
     } else {
       queryParams.sort_field = name;
-      queryParams.sort_direction = 'asc';
+      queryParams.sort_direction = "asc";
     }
-    router.get(route('lawyers.index'), queryParams);
+    router.get(route("lawyers.index"), queryParams);
   };
 
   const isSorted = (name, direction) => {
-    return queryParams.sort_field === name && queryParams.sort_direction === direction;
+    return (
+      queryParams.sort_field === name &&
+      queryParams.sort_direction === direction
+    );
   };
 
   const deleteLawyer = (lawyer) => {
-    if (!window.confirm('Are you sure you want to delete this lawyer?')) {
+    if (!window.confirm("Are you sure you want to delete this lawyer?")) {
       return;
     }
-    router.delete(route('lawyers.destroy', lawyer.id));
+    router.delete(route("lawyers.destroy", lawyer.id), {
+      onError: (errors) => {
+        alert("Failed to delete lawyer. Please try again.");
+      },
+    });
   };
 
   const [showSuccess, setShowSuccess] = useState(true);
-    useEffect(() => {
-      if (success) {
-        const timer = setTimeout(() => {
-          setShowSuccess(false);
-        }, 5000);
-        return () => clearTimeout(timer);
-      }
-    }, [success]);
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setShowSuccess(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   return (
     <AuthenticatedLayout
@@ -65,7 +78,7 @@ export default function Index({ auth, lawyers, queryParams = null , success}) {
             Lawyers
           </h2>
           <Link
-            href={route('lawyers.create')}
+            href={route("lawyers.create")}
             className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
           >
             Add new
@@ -76,8 +89,12 @@ export default function Index({ auth, lawyers, queryParams = null , success}) {
       <Head title="Lawyers" />
       <div className="py-12">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-             {success && showSuccess && (
-            <div className="bg-emerald-500 py-2 px-4 text-white rounded mb-4 transition-opacity duration-1000 ease-out">
+          {success && showSuccess && (
+            <div
+              className={`py-2 px-4 text-white rounded mb-4 transition-opacity duration-1000 ease-out ${
+                isException ? "bg-amber-500" : "bg-emerald-500"
+              }`}
+            >
               {success}
             </div>
           )}
@@ -143,8 +160,10 @@ export default function Index({ auth, lawyers, queryParams = null , success}) {
                           className="w-full"
                           defaultValue={queryParams.name}
                           placeholder="Lawyer Name"
-                          onBlur={(e) => searchFieldChanged('name', e.target.value)}
-                          onKeyPress={(e) => onKeyPress('name', e)}
+                          onBlur={(e) =>
+                            searchFieldChanged("name", e.target.value)
+                          }
+                          onKeyPress={(e) => onKeyPress("name", e)}
                         />
                       </th>
                       <th className="px-3 py-3"></th>
@@ -155,7 +174,10 @@ export default function Index({ auth, lawyers, queryParams = null , success}) {
                   </thead>
                   <tbody>
                     {lawyers.data.map((lawyer) => (
-                      <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={lawyer.id}>
+                      <tr
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                        key={lawyer.id}
+                      >
                         <td className="px-3 py-2">{lawyer.id}</td>
                         <td className="px-3 py-2">{lawyer.name}</td>
                         <td className="px-3 py-2">{lawyer.phone_number}</td>
@@ -163,7 +185,7 @@ export default function Index({ auth, lawyers, queryParams = null , success}) {
                         <td className="px-3 py-2">{lawyer.created_by.name}</td>
                         <td className="px-3 py-2 text-nowrap">
                           <Link
-                            href={route('lawyers.edit', lawyer.id)}
+                            href={route("lawyers.edit", lawyer.id)}
                             className="font-medium text-blue-600 dark:text-white hover:underline mx-1"
                           >
                             Edit

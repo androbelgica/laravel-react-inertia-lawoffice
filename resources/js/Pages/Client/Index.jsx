@@ -3,9 +3,15 @@ import Pagination from "@/Components/Pagination";
 import TextInput from "@/Components/TextInput";
 import TableHeading from "@/Components/TableHeading";
 import { Head, Link, router } from "@inertiajs/react";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-export default function Index({ auth, clients, queryParams = null, success }) {
+export default function Index({
+  auth,
+  clients,
+  queryParams = null,
+  success,
+  isException,
+}) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -47,7 +53,11 @@ export default function Index({ auth, clients, queryParams = null, success }) {
     if (!window.confirm("Are you sure you want to delete this client?")) {
       return;
     }
-    router.delete(route("clients.destroy", client.id));
+    router.delete(route("clients.destroy", client.id), {
+      onError: (errors) => {
+        alert("Failed to delete client. Please try again.");
+      },
+    });
   };
 
   const [showSuccess, setShowSuccess] = useState(true);
@@ -83,7 +93,11 @@ export default function Index({ auth, clients, queryParams = null, success }) {
       <div className="py-12">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           {success && showSuccess && (
-            <div className="bg-emerald-500 py-2 px-4 text-white rounded mb-4 transition-opacity duration-1000 ease-out">
+            <div
+              className={`py-2 px-4 text-white rounded mb-4 transition-opacity duration-1000 ease-out ${
+                isException ? "bg-amber-500" : "bg-emerald-500"
+              }`}
+            >
               {success}
             </div>
           )}

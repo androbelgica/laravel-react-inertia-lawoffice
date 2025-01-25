@@ -13,6 +13,7 @@ use App\Http\Resources\LawyerResource;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\StoreLawsuitRequest;
 use App\Http\Requests\UpdateLawsuitRequest;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 
 class LawsuitController extends Controller
@@ -52,6 +53,7 @@ class LawsuitController extends Controller
             "lawsuits" => LawsuitResource::collection($lawsuits),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
+            'isException' => session('isException', false),
         ]);
     }
     /**
@@ -156,10 +158,17 @@ class LawsuitController extends Controller
     public function destroy(Lawsuit $lawsuit)
     {
         $title = $lawsuit->title;
-        $lawsuit->delete();
-        return to_route('lawsuits.index')->with(
-            'success',
-            "Lawsuit \"$title\" was deleted successfully"
-        );
+        try {
+            $lawsuit->delete();
+            return to_route('lawsuits.index')->with(
+                'success',
+                "Lawsuit \"$title\" was deleted successfully"
+            );
+        } catch (QueryException $e) {
+            return to_route('lawsuits.index')->with([
+                'success' => "Lawsuit \"$title\" cannot be deleted because it is referenced by other records.",
+                'isException' => true,
+            ]);
+        }
     }
 }

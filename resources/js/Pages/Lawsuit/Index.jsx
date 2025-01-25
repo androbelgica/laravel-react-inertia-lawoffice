@@ -17,6 +17,7 @@ export default function Index({
   users = [],
   queryParams = null,
   success,
+  isException,
 }) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
@@ -68,7 +69,7 @@ export default function Index({
     if (success) {
       const timer = setTimeout(() => {
         setShowSuccess(false);
-      }, 5000);
+      }, 5000); // Display success message for 5 seconds
       return () => clearTimeout(timer);
     }
   }, [success]);
@@ -95,7 +96,11 @@ export default function Index({
       <div className="py-12"></div>
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
         {success && showSuccess && (
-          <div className="bg-emerald-500 py-2 px-4 text-white rounded mb-4 transition-opacity duration-1000 ease-out">
+          <div
+            className={`py-2 px-4 text-white rounded mb-4 transition-opacity duration-1000 ease-out ${
+              isException ? "bg-amber-500" : "bg-emerald-500"
+            }`}
+          >
             {success}
           </div>
         )}

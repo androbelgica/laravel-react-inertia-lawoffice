@@ -8,7 +8,7 @@ import {
   TASK_STATUS_CLASS_MAP,
   TASK_STATUS_TEXT_MAP,
 } from "@/constants";
-import { Link, router } from "@inertiajs/react";
+import { Link, router, useForm } from "@inertiajs/react";
 
 export default function TasksTable({
   other_legal_service_tasks = { data: [] }, // Ensure default value
@@ -45,6 +45,16 @@ export default function TasksTable({
       queryParams.sort_direction = "asc";
     }
     router.get(route("other-legal-service-tasks.index"), queryParams);
+  };
+
+  const { delete: destroy } = useForm();
+
+  const handleDelete = (id) => {
+    destroy(route("other-legal-service-tasks.destroy", id), {
+      onSuccess: () => {
+        router.get(route("other-legal-service-tasks.index"), queryParams);
+      },
+    });
   };
 
   return (
@@ -250,15 +260,12 @@ export default function TasksTable({
                   >
                     Edit
                   </Link>
-                  <Link
-                    href={route(
-                      "other-legal-service-tasks.destroy",
-                      other_legal_service_task.id
-                    )}
+                  <button
+                    onClick={() => handleDelete(other_legal_service_task.id)}
                     className="font-medium text-red-600 dark:text-red-500 hover:underline ml-2"
                   >
                     Delete
-                  </Link>
+                  </button>
                 </td>
               </tr>
             ))}

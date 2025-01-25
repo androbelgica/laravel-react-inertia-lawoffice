@@ -100,10 +100,11 @@ class OtherLegalServiceTaskController extends Controller
             ->paginate(10)
             ->onEachSide(1);
 
-        return inertia('OtherLegalService/Show', [
+        return inertia('OtherLegalServices/Show', [
             "other_legal_service_tasks" => OtherLegalServiceTaskResource::collection($other_legal_service_tasks),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
+            'other_service' => new OtherLegalServiceResource($otherLegalServiceTask->otherLegalService), // Ensure other_service is passed
         ]);
     }
 

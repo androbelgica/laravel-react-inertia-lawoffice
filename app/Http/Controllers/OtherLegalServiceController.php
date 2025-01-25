@@ -11,6 +11,7 @@ use App\Http\Requests\StoreOtherLegalServiceRequest;
 use App\Http\Requests\UpdateOtherLegalServiceRequest;
 use App\Http\Resources\OtherLegalServiceResource;
 use App\Http\Resources\OtherLegalServiceTaskResource;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 
 class OtherLegalServiceController extends Controller
@@ -41,6 +42,7 @@ class OtherLegalServiceController extends Controller
             'other_services' => OtherLegalServiceResource::collection($other_services),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
+            'isException' => session('isException', false),
         ]);
     }
 
@@ -133,13 +135,20 @@ class OtherLegalServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(OtherLegalService $other_services)
+    public function destroy(OtherLegalService $otherLegalService)
     {
-        $serviceName = $other_services->service_name;
-        $other_services->delete();
-        return to_route('other-legal-services.index')->with(
-            'success',
-            "Other Legal Service \"$serviceName\" was deleted successfully"
-        );
+        $serviceName = $otherLegalService->service_name;
+        try {
+            $otherLegalService->delete();
+            return to_route('other-legal-services.index')->with(
+                'success',
+                "Other Legal Service \"$serviceName\" was deleted successfully"
+            );
+        } catch (QueryException $e) {
+            return to_route('other-legal-services.index')->with([
+                'success' => "Other Legal Service \"$serviceName\" cannot be deleted because it is referenced by other records.",
+                'isException' => true,
+            ]);
+        }
     }
 }

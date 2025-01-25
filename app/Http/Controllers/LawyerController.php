@@ -7,6 +7,8 @@ use App\Http\Resources\LawyerResource;
 use App\Http\Requests\StoreLawyerRequest;
 use App\Http\Requests\UpdateLawyerRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LawyerController extends Controller
 {
@@ -33,6 +35,8 @@ class LawyerController extends Controller
             "lawyers" => LawyerResource::collection($lawyers),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
+            'errors' => session('errors'),
+            'isException' => session('isException', false),
         ]);
     }
 
@@ -100,10 +104,17 @@ class LawyerController extends Controller
     public function destroy(Lawyer $lawyer)
     {
         $name = $lawyer->name;
-        $lawyer->delete();
-        return to_route('lawyers.index')->with(
-            'success',
-            "Lawyer \"$name\" was deleted successfully"
-        );
+        try {
+            $lawyer->delete();
+            return to_route('lawyers.index')->with(
+                'success',
+                "Lawyer \"$name\" was deleted successfully"
+            );
+        } catch (QueryException $e) {
+            return to_route('lawyers.index')->with([
+                'success' => "Lawyer \"$name\" cannot be deleted because it is referenced by other records.",
+                'isException' => true,
+            ]);
+        }
     }
 }
