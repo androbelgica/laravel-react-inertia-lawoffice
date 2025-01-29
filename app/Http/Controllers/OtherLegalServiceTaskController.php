@@ -79,32 +79,9 @@ class OtherLegalServiceTaskController extends Controller
      */
     public function show(OtherLegalServiceTask $otherLegalServiceTask)
     {
-        $query = $otherLegalServiceTask->otherLegalService->other_legal_service_tasks();
-
-        $sortFields = request("sort_field", "created_at");
-        $sortDirections = request("sort_direction", "desc");
-
-        if (request('task_name')) {
-            $query->where('task_name', 'like', '%' . request('task_name') . '%');
-        }
-
-        if (request('priority')) {
-            $query->where('priority', 'like', '%' . request('priority') . '%');
-        }
-
-        if (request('status')) {
-            $query->where('status', 'like', '%' . request('status') . '%');
-        }
-
-        $other_legal_service_tasks = $query->orderBy($sortFields, $sortDirections)
-            ->paginate(10)
-            ->onEachSide(1);
-
-        return inertia('OtherLegalServices/Show', [
-            "other_legal_service_tasks" => OtherLegalServiceTaskResource::collection($other_legal_service_tasks),
-            'queryParams' => request()->query() ?: null,
+        return inertia('OtherLegalServicesTask/Show', [
+            'otherLegalServiceTask' => new OtherLegalServiceTaskResource($otherLegalServiceTask),
             'success' => session('success'),
-            'other_service' => new OtherLegalServiceResource($otherLegalServiceTask->otherLegalService), // Ensure other_service is passed
         ]);
     }
 

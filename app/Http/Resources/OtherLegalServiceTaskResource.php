@@ -31,6 +31,7 @@ class OtherLegalServiceTaskResource extends JsonResource
             'created_by' => new UserResource($this->createdBy),
             'updated_by' => new UserResource($this->updatedBy),
             'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),
+            'updated_at' => (new Carbon($this->updated_at))->format('Y-m-d'),
             'user_name' => $this->user->name, // Ensure user_name is included
         ];
     }

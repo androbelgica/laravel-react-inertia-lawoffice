@@ -23,6 +23,7 @@ class UpdateLawsuitTaskRequest extends FormRequest
     {
         return [
             'task_name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:2048'], // Increase character limit for description
             'lawsuit_id' => ['required', 'integer'],
             'user_id' => ['required', 'integer'], // Change assigned_to to user_id
             'priority' => ['required', 'string', 'max:255'],

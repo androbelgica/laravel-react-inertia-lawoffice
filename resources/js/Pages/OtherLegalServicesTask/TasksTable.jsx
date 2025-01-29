@@ -214,9 +214,17 @@ export default function TasksTable({
                       : "N/A"}
                   </td>
                 )}
-                <td className="px-3 py-2">
-                  {other_legal_service_task.task_name}
-                </td>
+
+                <th className="px-3 py-2 text-gray-100 hover:underline">
+                  <Link
+                    href={route(
+                      "other-legal-service-tasks.show",
+                      other_legal_service_task.id
+                    )}
+                  >
+                    {other_legal_service_task.task_name}
+                  </Link>
+                </th>
                 <td className="px-3 py-2">
                   {other_legal_service_task.description}
                 </td>

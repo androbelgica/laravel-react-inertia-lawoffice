@@ -160,7 +160,12 @@ export default function TasksTable({
               <th className="px-3 py-3"></th>
               <th className="px-3 py-3">
                 <TextInput
-                  className="w-full"
+                  className="w-auto"
+                  style={{
+                    width: `${
+                      queryParams.task_name ? queryParams.task_name.length : 10
+                    }ch`,
+                  }}
                   defaultValue={queryParams.task_name}
                   placeholder="Task Name"
                   onBlur={(e) =>
@@ -173,13 +178,18 @@ export default function TasksTable({
 
               <th className="px-3 py-3">
                 <SelectInput
-                  className="w-full"
-                  defaultValue={queryParams.progress_status}
+                  className="w-auto"
+                  style={{
+                    width: `${
+                      queryParams.priority ? queryParams.priority.length : 10
+                    }ch`,
+                  }}
+                  defaultValue={queryParams.priority}
                   onChange={(e) =>
                     searchFieldChanged("priority", e.target.value)
                   }
                 >
-                  <option value="">Select Status</option>
+                  <option value="">Select Priority</option>
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
@@ -187,7 +197,12 @@ export default function TasksTable({
               </th>
               <th className="px-3 py-3">
                 <SelectInput
-                  className="w-full"
+                  className="w-auto"
+                  style={{
+                    width: `${
+                      queryParams.status ? queryParams.status.length : 10
+                    }ch`,
+                  }}
                   defaultValue={queryParams.status}
                   onChange={(e) => searchFieldChanged("status", e.target.value)}
                 >
@@ -201,7 +216,12 @@ export default function TasksTable({
 
               <th className="px-3 py-3">
                 <TextInput
-                  className="w-full"
+                  className="w-auto"
+                  style={{
+                    width: `${
+                      queryParams.lawsuit ? queryParams.lawsuit.length : 10
+                    }ch`,
+                  }}
                   defaultValue={queryParams.lawsuit}
                   placeholder="Case Number"
                   onBlur={(e) => searchFieldChanged("lawsuit", e.target.value)}
@@ -232,7 +252,12 @@ export default function TasksTable({
                       : "N/A"}
                   </td>
                 )}
-                <td className="px-3 py-2">{lawsuit_task.task_name}</td>
+
+                <th className="px-3 py-2 text-gray-100 hover:underline">
+                  <Link href={route("lawsuit-tasks.show", lawsuit_task.id)}>
+                    {lawsuit_task.task_name}
+                  </Link>
+                </th>
                 <td className="px-3 py-2">{lawsuit_task.description}</td>
                 <td className="px-3 py-2">
                   <span

@@ -233,9 +233,14 @@ export default function Index({
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                   <tr className="text-nowrap">
                     <th className="px-3 py-3"></th>
-                    <th className="px-3 py-3">
+                    <th className="px-3 py-3 text-nowrap">
                       <TextInput
-                        className="w-full"
+                        className="w-auto"
+                        style={{
+                          width: `${
+                            queryParams.title ? queryParams.title.length : 10
+                          }ch`,
+                        }}
                         defaultValue={queryParams.title}
                         placeholder="Case Title"
                         onBlur={(e) =>
@@ -246,7 +251,14 @@ export default function Index({
                     </th>
                     <th className="px-3 py-3">
                       <TextInput
-                        className="w-full"
+                        className="w-auto"
+                        style={{
+                          width: `${
+                            queryParams.case_number
+                              ? queryParams.case_number.length
+                              : 13
+                          }ch`,
+                        }}
                         defaultValue={queryParams.case_number}
                         placeholder="Case Number"
                         onBlur={(e) =>
@@ -257,7 +269,14 @@ export default function Index({
                     </th>
                     <th className="px-3 py-3">
                       <SelectInput
-                        className="w-full"
+                        className="w-auto"
+                        style={{
+                          width: `${
+                            queryParams.case_type
+                              ? queryParams.case_type.length
+                              : 15
+                          }ch`,
+                        }}
                         defaultValue={queryParams.case_type}
                         onChange={(e) =>
                           searchFieldChanged("case_type", e.target.value)
@@ -278,7 +297,14 @@ export default function Index({
                     </th>
                     <th className="px-3 py-3">
                       <SelectInput
-                        className="w-full"
+                        className="w-auto"
+                        style={{
+                          width: `${
+                            queryParams.case_status
+                              ? queryParams.case_status.length
+                              : 15
+                          }ch`,
+                        }}
                         defaultValue={queryParams.case_status}
                         onChange={(e) =>
                           searchFieldChanged("case_status", e.target.value)

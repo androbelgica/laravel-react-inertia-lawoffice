@@ -83,31 +83,8 @@ class LawsuitTaskController extends Controller
      */
     public function show(LawsuitTask $lawsuitTask)
     {
-        $query = $lawsuitTask->lawsuit->lawsuit_tasks();
-
-        $sortFields = request("sort_field", "created_at");
-        $sortDirections = request("sort_direction", "desc");
-
-        if (request('task_name')) {
-            $query->where('task_name', 'like', '%' . request('task_name') . '%');
-        }
-
-        if (request('priority')) {
-            $query->where('priority', 'like', '%' . request('priority') . '%');
-        }
-
-        if (request('status')) {
-            $query->where('status', 'like', '%' . request('status') . '%');
-        }
-
-        $lawsuit_tasks = $query->orderBy($sortFields, $sortDirections)
-            ->paginate(10)
-            ->onEachSide(1);
-
-        return inertia('Lawsuit/Show', [
-
-            "lawsuit_tasks" => new LawsuitTaskResource($lawsuit_tasks),
-            'queryParams' => request()->query() ?: null,
+        return inertia('LawsuitTask/Show', [
+            'lawsuitTask' => new LawsuitTaskResource($lawsuitTask),
             'success' => session('success'),
         ]);
     }
