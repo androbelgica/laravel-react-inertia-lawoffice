@@ -9,6 +9,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\LawsuitTaskController;
 use App\Http\Controllers\OtherLegalServiceTaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Resources\LawsuitTaskResource;
 use App\Http\Resources\OtherLegalServiceTaskResource;
 use Illuminate\Support\Facades\Route;
@@ -17,14 +18,7 @@ use Inertia\Inertia;
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        $lawsuitTasks = App\Models\LawsuitTask::all();
-        $otherLegalServiceTasks = App\Models\OtherLegalServiceTask::all();
-        return Inertia::render('Dashboard', [
-            'lawsuit_tasks' => LawsuitTaskResource::collection($lawsuitTasks)->resolve(),
-            'other_legal_service_tasks' => OtherLegalServiceTaskResource::collection($otherLegalServiceTasks)->resolve(),
-        ]);
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('clients', ClientController::class);
     Route::resource('lawyers', LawyerController::class);
