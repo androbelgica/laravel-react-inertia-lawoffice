@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import SelectInput from "@/Components/SelectInput";
@@ -22,6 +22,12 @@ export default function Create({ auth }) {
     password_confirmation: "",
   });
 
+  useEffect(() => {
+    const generatedPassword = Math.random().toString(36).slice(-8);
+    setData("password", generatedPassword);
+    setData("password_confirmation", generatedPassword);
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setData(name, value);
@@ -37,6 +43,9 @@ export default function Create({ auth }) {
     post(route("users.store"), {
       onError: () => {
         reset("password", "password_confirmation");
+      },
+      onSuccess: () => {
+        // Implement email notification and verification logic here
       },
     });
   };
@@ -183,7 +192,6 @@ export default function Create({ auth }) {
                   />
                 )}
               </div>
-
               <div className="mt-4 text-right">
                 <Link
                   href={route("users.index")}
