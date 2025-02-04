@@ -25,11 +25,11 @@ export default function UpdateProfileInformation({ status, className = "" }) {
   return (
     <section className={className}>
       <header>
-        <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h2 className="text-lg font-medium text-amber-900 dark:text-amber-100">
           Profile Information
         </h2>
 
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-1 text-sm text-amber-600 dark:text-amber-400">
           Update your account's profile information and email address.
         </p>
       </header>
@@ -97,17 +97,12 @@ export default function UpdateProfileInformation({ status, className = "" }) {
           <InputError className="mt-2" message={errors.phone_number} />
         </div>
 
-        {user.is_default_password && (
+        {(user.is_default_password === true ||
+          user.is_default_password === 1) && (
           <div>
-            <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
+            <p className="mt-2 text-sm text-amber-800 dark:text-amber-600">
               You are using a default password. Please update your password for
               better security.
-              <Link
-                href={route("password.change")}
-                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-              >
-                Click here to change your password.
-              </Link>
             </p>
           </div>
         )}
@@ -122,7 +117,7 @@ export default function UpdateProfileInformation({ status, className = "" }) {
             leave="transition ease-in-out"
             leaveTo="opacity-0"
           >
-            <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
+            <p className="text-sm text-amber-600 dark:text-amber-400">Saved.</p>
           </Transition>
         </div>
       </form>

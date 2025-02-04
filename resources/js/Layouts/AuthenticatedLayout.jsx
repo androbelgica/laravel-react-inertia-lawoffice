@@ -72,12 +72,14 @@ export default function AuthenticatedLayout({ header, children }) {
                 >
                   Appointments
                 </NavLink>
-                <NavLink
-                  href={route("users.index")}
-                  active={route().current("users.index")}
-                >
-                  Users
-                </NavLink>
+                {user.role === "admin" && (
+                  <NavLink
+                    href={route("users.index")}
+                    active={route().current("users.index")}
+                  >
+                    Users
+                  </NavLink>
+                )}
               </div>
             </div>
 
