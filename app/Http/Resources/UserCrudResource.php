@@ -23,9 +23,8 @@ class UserCrudResource extends JsonResource
             'phone_number' => $this->phone_number,
             'address' => $this->address,
             'email' => $this->email,
+            'is_default_password' => $this->is_default_password,
             "created_at" => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
-
-
         ];
     }
 }

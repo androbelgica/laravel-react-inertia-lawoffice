@@ -24,7 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'address',
         'phone_number',
         'role',
-        'email_verified_at',
+        'is_default_password',
         'created_at',
         'updated_at',
 
@@ -48,7 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'is_default_password' => 'boolean',
             'password' => 'hashed',
         ];
     }

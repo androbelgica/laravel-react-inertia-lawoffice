@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserCrudResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\UserCreatedNotification;
 
 class UserController extends Controller
 {
@@ -59,8 +61,13 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
-        $data['password'] = bcrypt($data['password']); // Hash the password
-        User::create($data);
+        $password = $data['password'];
+        $data['password'] = bcrypt($password); // Hash the password
+        $data['is_default_password'] = true; // Set default password flag
+        $user = User::create($data);
+
+        $user->notify(new UserCreatedNotification($password));
+
         return to_route('users.index')->with('success', 'User was added successfully');
     }
 
