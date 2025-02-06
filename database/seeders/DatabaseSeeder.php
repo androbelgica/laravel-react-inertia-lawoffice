@@ -30,15 +30,6 @@ class DatabaseSeeder extends Seeder
             'is_default_password' => '0',
         ]);
 
-        User::factory()->create([
-            'name' => 'Jane Doe',
-            'role' => 'user',
-            'phone_number' => '081234567891',
-            'address' => 'Jl. Consectetur Adipiscing Elit',
-            'email' => 'user@example.com',
-            'password' => bcrypt('user1234'),
-            'email_verified_at' => now(),
-        ]);
 
         // Client::factory(10)
         //     ->hasLawsuits(5)
